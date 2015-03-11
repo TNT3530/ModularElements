@@ -1,0 +1,16 @@
+[
+{
+  "modid": "modularelements",
+  "name": "Modular Elements",
+  "description": "Allows for creation of many elements",
+  "version": "",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["TNT3530"],
+  "credits": "TNT3530 for, well, Everything :P",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

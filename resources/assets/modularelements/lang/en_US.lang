@@ -1,0 +1,26 @@
+#Gui Names
+tile.modularelements_blockAtomWorkbench.name=Elemental Workbench
+tile.modularelements_blockToolInfuser.name=Elemental Tool Infuser
+tile.modularelements_blockAtomCompressor.name=Elemental Manipulator
+tile.modularelements_blockAtomDecomposer.name=Elemental Decomposer
+#Blocks
+modularelements_blockAtomWorkbenchGuiName=Elemental Workbench
+modularelements_blockToolInfuserGuiName=Elemental Tool Infuser
+modularelements_blockAtomCompressorGuiName=Elemental Manipulator
+modularelements_blockAtomDecomposerGuiName=Elemental Decomposer
+#Items
+item.modularelements_coreElement.name=THIS ELEMENT IS KILL! PLZ REPORT
+item.modularelements_basicElement.name=Basic Element
+item.modularelements_itemProton.name=Proton
+item.modularelements_itemElectron.name=Electron
+item.modularelements_itemNeutron.name=Neutron
+item.modularelements_basicSword.name=Elemental Sword
+item.modularelements_basicPick.name=Elemental Pickaxe
+item.modularelements_basicAxe.name=Elemental Axe
+item.modularelements_basicShovel.name=Elemental Shovel
+item.modularelements_basicHoe.name=Elemental Hoe
+#Creative Tab
+modularelements_tabmodularelementstabElements=ME- Elements
+modularelements_tabmodularelementstabElementalBlocks=ME- Blocks
+modularelements_tabmodularelementstabElementalMaterials=ME- Materials
+modularelements_tabmodularelementstabElementalTools=ME- Tools
