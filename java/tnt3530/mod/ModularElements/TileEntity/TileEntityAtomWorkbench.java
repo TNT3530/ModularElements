@@ -232,7 +232,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 				this.elementInformation = ElementStorageManager.getElementProperties(check, this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
 			}
 
-			String elementName = "element_" + ElementStorageManager.getElementName(this.elementInformation[1]) + "ium " + "§§(§§" + (this.elementInformation[1] + this.elementInformation[2]) + "§§)";
+			String elementName = ElementStorageManager.getFullName(this.elementInformation[1], this.elementInformation[2]);
 
 			if (this.stacks[2] != null && this.stacks[2].stackSize > 0 && 
 					this.stacks[2].getItem() == ModularElements.basicElement

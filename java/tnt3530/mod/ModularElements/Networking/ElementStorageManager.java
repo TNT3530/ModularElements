@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -20,7 +21,6 @@ import tnt3530.mod.ModularElements.TileEntity.TileEntityAtomWorkbench;
 public class ElementStorageManager
 {
 	public static final int maxStoredElements = ConfigurationHandler.maxElements;
-
 	public static String[] loadedElementsAndInfo = null;
 	public static int elementId = -1;
 	private static boolean reasons = false;
@@ -34,6 +34,10 @@ public class ElementStorageManager
 	public static Item[] ingots = new Item[maxStoredElements];
 	public static Block[] blocks = new Block[maxStoredElements];
 	
+	public static String getFullName(int pro, int neu)
+	{
+		return "element_" + getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
+	}
 	
 	public static boolean canCreateElement(String name)
 	{
@@ -279,6 +283,19 @@ public class ElementStorageManager
 		}
 		catch(Exception exc){
 			exc.printStackTrace(); // If there was an error, print the info.
+			System.out.println("No CreatedElements.txt found!");
+			
+			try
+			{
+				PrintWriter writer = new PrintWriter("CreatedElements.txt");
+				writer.println("0:0:0:0");
+				writer.close();
+				System.out.println("Created a new CreatedElements.txt for you. You're welcome.");
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 		System.out.println("Elements read from file");
 		loadedElementsAndInfo = ret;

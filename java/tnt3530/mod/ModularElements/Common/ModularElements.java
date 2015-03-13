@@ -121,7 +121,7 @@ public class ModularElements
 				int dura = (hard * 1024) - (brit * 256);
 				int speed = (hard + 14) - (brit);
 				
-				String name = "element_" + ElementStorageManager.getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
+				String name = ElementStorageManager.getFullName(pro, neu);
 				
 				//Adding Tools
 				String nameSimp = ElementStorageManager.getElementName(pro) + "ium(" + (neu + pro) + ")";
