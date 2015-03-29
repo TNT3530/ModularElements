@@ -39,6 +39,11 @@ public class ElementStorageManager
 		return "element_" + getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
 	}
 	
+	public static String getDisplayName(int pro, int neu)
+	{
+		return getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
+	}
+	
 	public static boolean canCreateElement(String name)
 	{
 		if(loadedElementsAndInfo.length > 0 && !reasons)

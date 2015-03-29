@@ -331,7 +331,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 				this.elementInformation[2], this.elementInformation[3], ElementStorageManager.getElementSymbol(this.elementInformation[1]), ele);
 		
 		//ElementStorageManager.getElementProperties(ElementStorageManager.getElementGroup(this.elementInformation[1]), this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
-		String name = ElementStorageManager.getElementName(elementInformation[1]) + "ium " + "§§(§§" + (elementInformation[1] + elementInformation[2]) + "§§)";
+		String name = ElementStorageManager.getDisplayName(this.elementInformation[1], this.elementInformation[2]);
 		
 		this.stacks[3] = new ItemStack(element, 1);
 		this.stacks[3].setStackDisplayName(name);

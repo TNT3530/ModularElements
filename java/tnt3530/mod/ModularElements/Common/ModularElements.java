@@ -124,7 +124,7 @@ public class ModularElements
 				String name = ElementStorageManager.getFullName(pro, neu);
 				
 				//Adding Tools
-				String nameSimp = ElementStorageManager.getElementName(pro) + "ium(" + (neu + pro) + ")";
+				String nameSimp = ElementStorageManager.getElementName(pro) + "ium (" + (neu + pro) + ")";
 				basicSword2 = new itemElementalSword("elementalSword_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
 				basicAxe2 = new itemElementalAxe("elementalAxe_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
 				basicShovel2 = new itemElementalSpade("elementalShovel_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
