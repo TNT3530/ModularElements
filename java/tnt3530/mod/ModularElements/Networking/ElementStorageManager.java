@@ -34,16 +34,43 @@ public class ElementStorageManager
 	public static Item[] ingots = new Item[maxStoredElements];
 	public static Block[] blocks = new Block[maxStoredElements];
 	
+	/**
+	 * 	@param pro
+	 *  Amount of protons in the element being named
+	 *  
+	 *  @param neu
+	 *  Amount of neutrons in the element being named
+	 *  
+	 *  @return
+	 *  Returns the full name of the element, including the element_ part
+	 */
 	public static String getFullName(int pro, int neu)
 	{
 		return "element_" + getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
 	}
 	
+	/**
+	 * 	@param pro
+	 *  Amount of protons in the element being named
+	 *  
+	 *  @param neu
+	 *  Amount of neutrons in the element being named
+	 *  
+	 *  @return
+	 *  Returns the displayable name, the one without the element_ part
+	 */
 	public static String getDisplayName(int pro, int neu)
 	{
 		return getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
 	}
 	
+	/**
+	 * 	@param name
+	 *  Amount of protons in the element being named
+	 *  
+	 *  @return
+	 *  True if the element wont exceed the max amount of elements and the id is free
+	 */
 	public static boolean canCreateElement(String name)
 	{
 		if(loadedElementsAndInfo.length > 0 && !reasons)
@@ -61,6 +88,19 @@ public class ElementStorageManager
 		else return false;
 	}
 
+	/**
+	 * 	@param name
+	 *  Name of the element (This is just for debug purposes)
+	 *  
+	 *  @param var1
+	 *  Amount of protons in the element being stored
+	 *  
+	 *  @param var2
+	 *  Amount of neutrons in the element being stored
+	 *  
+	 *  @param var3
+	 *  Amount of electrons in the element being stored
+	 */
 	public static void storeElement(String name, int var1, int var2, int var3)
 	{
 		elementId++;
@@ -109,6 +149,13 @@ public class ElementStorageManager
 
 	}
 	
+	/**
+	 * @param name
+	 * The name of the element
+	 * 
+	 * @return
+	 * Returns an Int array of the amount of protons for the element and the mass
+	 */
 	public static int[] getProtonsFromName(String name)
 	{
 		String[] x = name.split("§§");
@@ -251,6 +298,16 @@ public class ElementStorageManager
 		return ar;
 	}
 	
+	/**
+	 * @param ton
+	 * Amount of protons
+	 * 
+	 * @param mass
+	 * Mass of the element
+	 * 
+	 * @return
+	 * Returns the element ID
+	 */
 	public static int getIdFromProtonsAndMass(int ton, int mass)
 	{
 		int ret = 0;
@@ -306,6 +363,13 @@ public class ElementStorageManager
 		loadedElementsAndInfo = ret;
 	}
 	
+	/**
+	 * @param id
+	 * ID of the element to get information about
+	 * 
+	 * @return
+	 * Returns a STRING array of the Protons, Neutrons and Electrons retrieved from CreatedElements.txt
+	 */
 	public static String[] getElementAndInfo(int id)
 	{
 		String ret = loadedElementsAndInfo[id];
@@ -392,6 +456,13 @@ public class ElementStorageManager
 		else return "";
 	}
 
+	/**
+	 * @param x
+	 * Amount of protons of the element to name
+	 * 
+	 * @return
+	 * Returns name of the element _-_-_ium
+	 */
 	public static String getElementName(int x)
 	{		
 		int trimThou = (x / 1000) * 1000;
@@ -411,6 +482,13 @@ public class ElementStorageManager
 		else return "";
 	}
 
+	/**
+	 * @param x
+	 * Amount of protons of the element to get the symbol of
+	 * 
+	 * @return
+	 * Returns 1-3 Letter symbol of the element
+	 */
 	public static String getElementSymbol(int x)
 	{		
 		int trimThou = (x / 1000) * 1000;
@@ -555,6 +633,18 @@ public class ElementStorageManager
 		else return 0;
 	}
 	
+	/**
+	 * @param group
+	 * Group number of the element, retrieved from {@link getElementGroup}
+	 * @param p
+	 * Protons
+	 * @param n
+	 * Neutrons
+	 * @param e
+	 * Electrons
+	 * @return
+	 * Returns a int array of the properties
+	 */
 	public static int[] getElementProperties(int group, int p, int n, int e)
 	{
 		////////////0, 1, 2, 3, 4, 5, 6,    7,   8, 9, 10, 11, 12

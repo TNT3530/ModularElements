@@ -11,5 +11,6 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityToolInfuser.class, "tileentityToolInfuser");
 		GameRegistry.registerTileEntity(TileEntityAtomCompressor.class, "tileentityAtomCompressor");
 		GameRegistry.registerTileEntity(TileEntityAtomDecomposer.class, "tileentityAtomDecomposer");
+		GameRegistry.registerTileEntity(TileEntityElementalGenerator.class, "tileentityElementalGenerator");
 	}
 }

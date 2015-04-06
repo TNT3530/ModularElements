@@ -41,6 +41,7 @@ public class ModularElements
 	public static Item basicIngot;
 	public static Block atomWorkbench, toolInfuser, atomCompressor, atomDecomposer;
 	public static Block basicBlock;
+	public static Block basicGenerator;
 	//public static Item basicHelmet, basicChest, basicLegs, basicFeet;
 
 	@SidedProxy(clientSide = Constants.CLIENT_PROXY_CLASS, serverSide = Constants.SERVER_PROXY_CLASS)
@@ -98,6 +99,8 @@ public class ModularElements
 		atomCompressor = new BlockAtomCompressor();
 		atomDecomposer = new BlockAtomDecomposer();
 		
+		basicGenerator = new BlockElementalGenerator();
+		
 		ElementStorageManager.readElements();
 
 		if(ElementStorageManager.loadedElementsAndInfo != null)
@@ -152,20 +155,20 @@ public class ModularElements
 				ElementStorageManager.blocks[x] = basicBlock;
 				
 				ElementStorageManager.nextStore = (x + 1);
-				
-				GameRegistry.addRecipe(new ItemStack(this.atomWorkbench), new Object[] {"SSS", "ONO", "ORO", 'S', Blocks.stone, 'N', Items.nether_star, 'R', Items.redstone, 'O', Blocks.obsidian});
-				GameRegistry.addRecipe(new ItemStack(this.atomDecomposer), new Object[] {"SSS", "ODO", "ORO", 'S', Blocks.stone, 'D', Items.diamond, 'R', Items.redstone, 'O', Blocks.obsidian});
-				GameRegistry.addRecipe(new ItemStack(this.atomCompressor), new Object[] {"SPS", "ONO", "ORO", 'S', Blocks.stone, 'N', Items.diamond, 'R', Items.redstone, 'O', Blocks.obsidian, 'P', Blocks.piston});
-				GameRegistry.addRecipe(new ItemStack(this.toolInfuser), new Object[] {"SPS", "PXP", "ORO", 'S', Blocks.stone, 'R', Items.redstone, 'O', Blocks.obsidian, 'P', Blocks.piston});
-				GameRegistry.addRecipe(new ItemStack(this.basicElement, 16), new Object[] {"GXG", "GPG", "XGX", 'G', Blocks.glass, 'P', Items.water_bucket});
-				
-				GameRegistry.addRecipe(new ItemStack(this.basicSword), new Object[] {"XXI", "OIX", "SOX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
-				GameRegistry.addRecipe(new ItemStack(this.basicAxe), new Object[] {"XII", "XOI", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
-				GameRegistry.addRecipe(new ItemStack(this.basicShovel), new Object[] {"XIX", "XOX", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
-				GameRegistry.addRecipe(new ItemStack(this.basicPick), new Object[] {"III", "XOX", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
-				GameRegistry.addRecipe(new ItemStack(this.basicHoe), new Object[] {"XII", "XOX", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
 			}	
 		}
+		
+		GameRegistry.addRecipe(new ItemStack(this.atomWorkbench), new Object[] {"SSS", "ONO", "ORO", 'S', Blocks.stone, 'N', Items.nether_star, 'R', Items.redstone, 'O', Blocks.obsidian});
+		GameRegistry.addRecipe(new ItemStack(this.atomDecomposer), new Object[] {"SSS", "ODO", "ORO", 'S', Blocks.stone, 'D', Items.diamond, 'R', Items.redstone, 'O', Blocks.obsidian});
+		GameRegistry.addRecipe(new ItemStack(this.atomCompressor), new Object[] {"SPS", "ONO", "ORO", 'S', Blocks.stone, 'N', Items.diamond, 'R', Items.redstone, 'O', Blocks.obsidian, 'P', Blocks.piston});
+		GameRegistry.addRecipe(new ItemStack(this.toolInfuser), new Object[] {"SPS", "PXP", "ORO", 'S', Blocks.stone, 'R', Items.redstone, 'O', Blocks.obsidian, 'P', Blocks.piston});
+		GameRegistry.addRecipe(new ItemStack(this.basicElement, 16), new Object[] {"GXG", "GPG", "XGX", 'G', Blocks.glass, 'P', Items.water_bucket});
+		
+		GameRegistry.addRecipe(new ItemStack(this.basicSword), new Object[] {"XXI", "OIX", "SOX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
+		GameRegistry.addRecipe(new ItemStack(this.basicAxe), new Object[] {"XII", "XOI", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
+		GameRegistry.addRecipe(new ItemStack(this.basicShovel), new Object[] {"XIX", "XOX", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
+		GameRegistry.addRecipe(new ItemStack(this.basicPick), new Object[] {"III", "XOX", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
+		GameRegistry.addRecipe(new ItemStack(this.basicHoe), new Object[] {"XII", "XOX", "XSX", 'I', Blocks.iron_block, 'O', Blocks.obsidian, 'S', Items.stick});
 	}
 
 	@Mod.EventHandler

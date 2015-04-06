@@ -14,7 +14,7 @@ public class Constants
 	
 	public static int getItemEnergy(Item item)
 	{
-		if(item == Items.coal) return 10000;
+		if(item == Items.coal) return 100;
 		if(item == Items.diamond) return 100000;
 		if(item == Items.golden_apple) return 100000000;
 		else return 0;

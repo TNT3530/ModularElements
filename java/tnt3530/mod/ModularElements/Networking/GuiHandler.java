@@ -31,6 +31,11 @@ public class GuiHandler implements IGuiHandler {
 			TileEntityAtomDecomposer tileentity1 = (TileEntityAtomDecomposer) world.getTileEntity(x, y, z);
 			return new ContainerAtomDecomposer(player.inventory, tileentity1);
 		}
+		if(ID == 4)
+		{
+			TileEntityElementalGenerator tileentity1 = (TileEntityElementalGenerator) world.getTileEntity(x, y, z);
+			return new ContainerElementalGenerator(player.inventory, tileentity1);
+		}
 		return null;
 	}
 
@@ -56,6 +61,11 @@ public class GuiHandler implements IGuiHandler {
 		{
 			TileEntityAtomDecomposer tileentity1 = (TileEntityAtomDecomposer) world.getTileEntity(x, y, z);
 			return new GuiAtomDecomposer(player.inventory, tileentity1);
+		}
+		if(ID == 4)
+		{
+			TileEntityElementalGenerator tileentity1 = (TileEntityElementalGenerator) world.getTileEntity(x, y, z);
+			return new GuiElementalGenerator(player.inventory, tileentity1);
 		}
 		else return null;
 	}
