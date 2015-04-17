@@ -39,23 +39,23 @@ import cpw.mods.fml.relauncher.SideOnly;
 		}
 		public void addCraftingToCrafters(ICrafting craft){
 			super.addCraftingToCrafters(craft);
-			craft.sendProgressBarUpdate(this, 1, this.tileatomCompressor.storedEnergy);
+			craft.sendProgressBarUpdate(this, 1, this.tileatomCompressor.getEnergyStored());
 		}
 		public void detectAndSendChanges(){
 			super.detectAndSendChanges();
 			for(int i = 0; i < this.crafters.size(); ++i){
 				ICrafting craft = (ICrafting) this.crafters.get(i);
-				if(this.storedEnergy != this.tileatomCompressor.storedEnergy){
-					craft.sendProgressBarUpdate(this, 1, this.tileatomCompressor.storedEnergy);
+				if(this.storedEnergy != this.tileatomCompressor.getEnergyStored()){
+					craft.sendProgressBarUpdate(this, 1, this.tileatomCompressor.getEnergyStored());
 				}
 			}
-			this.storedEnergy = this.tileatomCompressor.storedEnergy;
+			this.storedEnergy = this.tileatomCompressor.getEnergyStored();
 		}
 		@SideOnly(Side.CLIENT)
 		public void updateProgressBar(int par1, int par2){
 			if(par1 == 1)
 			{
-				this.tileatomCompressor.storedEnergy = par2;
+				//this.tileatomCompressor.storage.setEnergyStored(par2);
 			}
 		}
 		@Override

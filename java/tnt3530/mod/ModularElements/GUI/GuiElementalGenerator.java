@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiElementalGenerator extends GuiContainer{
-	private static final ResourceLocation furnaceGuiTextures = new ResourceLocation(Constants.MODID + ":" + "textures/client/gui/guiatomdecomposer.png");
+	private static final ResourceLocation furnaceGuiTextures = new ResourceLocation(Constants.MODID + ":" + "textures/client/gui/guielementalgenerator.png");
 	private TileEntityElementalGenerator tileFurnace;
 	
 	//private GuiTextField text;
@@ -53,7 +53,7 @@ public class GuiElementalGenerator extends GuiContainer{
 		
 		String string = this.tileFurnace.hasCustomInventoryName() ? this.tileFurnace.getInventoryName() : I18n.format(Constants.MODID + "_" + "blockElementalGeneratorGuiName", new Object[0]);
 		
-		this.fontRendererObj.drawString(string, this.xSize / 2 - this.fontRendererObj.getStringWidth(string) + 52, -17, 4210752);
+		this.fontRendererObj.drawString(string, this.xSize / 2 - this.fontRendererObj.getStringWidth(string) + 52, -10, 4210752);
 		this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), this.xSize / 2 - 80, this.ySize /2 - 35, 4210752);
 		
 		//State (Solid[1], Liquid[2], Gas[3])
@@ -76,35 +76,35 @@ public class GuiElementalGenerator extends GuiContainer{
 		//this.elementInformation[12] = 65;
 		
 
-		int displayedEnergy = 0;
-		int norm = this.tileFurnace.getEnergyStored();
+		double displayedEnergy = 0;
+		double norm = this.tileFurnace.getEnergyStored();
 		String label = "";
 		if(norm >= 0 && norm < 1000)
 		{
-			label = "RF";
+			label = " RF";
 			displayedEnergy = norm;
 		}
 		if(norm >= 1000 && norm < (1000*1000))
 		{
-			label = "kRF";
+			label = "k RF";
 			displayedEnergy = norm/1000;
 		}
 		if(norm >= (1000*1000) && norm < (1000*1000*1000))
 		{
-			label = "mRF";
+			label = "m RF";
 			displayedEnergy = norm/(1000*1000);
 		}
 		if(norm >= (1000*1000*1000) && norm < (1000*1000*1000*1000))
 		{
-			label = "gRF";
+			label = "g RF";
 			displayedEnergy = norm/(1000*1000*1000);
 		}
 		if(norm >= (1000*1000*1000*1000) && norm < (1000*1000*1000*1000*1000))
 		{
-			label = "tRF";
+			label = "t RF";
 			displayedEnergy = norm/(1000*1000*1000*1000);
 		}
-		this.fontRendererObj.drawString("Power- " + displayedEnergy + label, this.xSize / 2 - 43, -9, 4210752);
+		this.fontRendererObj.drawString("Power- " + displayedEnergy + label, this.xSize / 2 - 9, 12, 4210752);
 		//this.text.drawTextBox();
 	}
 	/*

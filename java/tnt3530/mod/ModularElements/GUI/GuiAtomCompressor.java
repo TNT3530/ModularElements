@@ -77,32 +77,32 @@ public class GuiAtomCompressor extends GuiContainer{
 		
 
 		double displayedEnergy = 0;
+		double norm = this.tileFurnace.getEnergyStored();
 		String label = "";
-		int j = 1;
-		if(this.tileFurnace.storedEnergy >= 0 && this.tileFurnace.storedEnergy < (j * 1000))
+		if(norm >= 0 && norm < 1000)
 		{
-			displayedEnergy = round(this.tileFurnace.storedEnergy, 2);
-			label = "J";
+			label = " RF";
+			displayedEnergy = norm;
 		}
-		if(this.tileFurnace.storedEnergy >= (j * 1000) && this.tileFurnace.storedEnergy < (j * 1000 * 1000))
+		if(norm >= 1000 && norm < (1000*1000))
 		{
-			displayedEnergy = round(this.tileFurnace.storedEnergy / (j * 1000), 2);
-			label = "KJ";
+			label = "k RF";
+			displayedEnergy = norm/1000;
 		}
-		if(this.tileFurnace.storedEnergy >= (j * 1000 * 1000) && this.tileFurnace.storedEnergy < (j * 1000 * 1000 * 1000))
+		if(norm >= (1000*1000) && norm < (1000*1000*1000))
 		{
-			displayedEnergy = round(this.tileFurnace.storedEnergy / (j * 1000 * 1000), 2);
-			label = "MJ";
+			label = "m RF";
+			displayedEnergy = norm/(1000*1000);
 		}
-		if(this.tileFurnace.storedEnergy >= (j * 1000 * 1000 * 1000) && this.tileFurnace.storedEnergy < (j * 1000 * 1000 * 1000 * 1000))
+		if(norm >= (1000*1000*1000) && norm < (1000*1000*1000*1000))
 		{
-			displayedEnergy = round(this.tileFurnace.storedEnergy / (j * 1000 * 1000 * 1000), 2);
-			label = "GJ";
+			label = "g RF";
+			displayedEnergy = norm/(1000*1000*1000);
 		}
-		if(this.tileFurnace.storedEnergy >= (j * 1000 * 1000 * 1000 * 1000) && this.tileFurnace.storedEnergy < (j * 1000 * 1000 * 1000 * 1000 * 1000))
+		if(norm >= (1000*1000*1000*1000) && norm < (1000*1000*1000*1000*1000))
 		{
-			displayedEnergy = round(this.tileFurnace.storedEnergy / (j * 1000 * 1000 * 1000 * 1000), 2);
-			label = "TJ";
+			label = "t RF";
+			displayedEnergy = norm/(1000*1000*1000*1000);
 		}
 		this.fontRendererObj.drawString("Power- " + displayedEnergy + label, this.xSize / 2 - 43, -9, 4210752);
 		//this.text.drawTextBox();

@@ -17,9 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 		
 		public ContainerElementalGenerator(InventoryPlayer player, TileEntityElementalGenerator tileEntityelementalGenerator){
 			this.tileelementalGenerator = tileEntityelementalGenerator;
-			this.addSlotToContainer(new Slot(tileEntityelementalGenerator, 0, 6, -16)); //Fuel In
-			this.addSlotToContainer(new SlotFurnace(player.player, tileEntityelementalGenerator, 1, 92, 14)); //Output
-		
+			this.addSlotToContainer(new Slot(tileEntityelementalGenerator, 0, 51, 9)); //Fuel In
 			
 			int i;
 			for(i = 0; i < 3; ++i){
@@ -39,7 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 			super.detectAndSendChanges();
 			for(int i = 0; i < this.crafters.size(); ++i){
 				ICrafting craft = (ICrafting) this.crafters.get(i);
-				if(this.storedEnergy != this.tileelementalGenerator.getEnergyStored(null)){
+				if(this.storedEnergy != this.tileelementalGenerator.getEnergyStored()){
 					craft.sendProgressBarUpdate(this, 0, (int) this.tileelementalGenerator.getEnergyStored());
 				}
 			}
@@ -52,7 +50,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 		@SideOnly(Side.CLIENT)
 		public void updateProgressBar(int par1, int par2){
 			if(par1 == 0){
-				//this.tileelementalGenerator.setEnergy(par2);
+				//this.tileelementalGenerator.storage.setEnergyStored(par2);
 			}
 		}
 		

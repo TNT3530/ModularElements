@@ -29,7 +29,7 @@ import tnt3530.mod.ModularElements.Items.*;
 import tnt3530.mod.ModularElements.Networking.*;
 import tnt3530.mod.ModularElements.TileEntity.*;
 
-@Mod(modid = Constants.MODID, name = Constants.MODNAME, version = Constants.VERSION)
+@Mod(modid = Constants.MODID, name = Constants.MODNAME, version = Constants.VERSION, dependencies="required-after:CoFHCore")
 
 
 public class ModularElements 

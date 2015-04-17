@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 		
 		public ContainerAtomDecomposer(InventoryPlayer player, TileEntityAtomDecomposer tileEntityatomDecomposer){
 			this.tileatomDecomposer = tileEntityatomDecomposer;
-			this.addSlotToContainer(new Slot(tileEntityatomDecomposer, 0, 6, -16)); //Fuel In
+			//this.addSlotToContainer(new Slot(tileEntityatomDecomposer, 0, 6, -16)); //Fuel In
 			this.addSlotToContainer(new Slot(tileEntityatomDecomposer, 1, 35, 14)); //Element In
 			this.addSlotToContainer(new SlotFurnace(player.player, tileEntityatomDecomposer, 2, 92, 14)); //Output
 			this.addSlotToContainer(new SlotFurnace(player.player, tileEntityatomDecomposer, 3, 110, 14)); //Output
@@ -36,17 +36,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 		}
 		public void addCraftingToCrafters(ICrafting craft){
 			super.addCraftingToCrafters(craft);
-			craft.sendProgressBarUpdate(this, 0, this.tileatomDecomposer.storedEnergy);
+			craft.sendProgressBarUpdate(this, 0, this.tileatomDecomposer.getEnergyStored());
 		}
 		public void detectAndSendChanges(){
 			super.detectAndSendChanges();
 			for(int i = 0; i < this.crafters.size(); ++i){
 				ICrafting craft = (ICrafting) this.crafters.get(i);
-				if(this.storedEnergy != this.tileatomDecomposer.storedEnergy){
-					craft.sendProgressBarUpdate(this, 0, this.tileatomDecomposer.storedEnergy);
+				if(this.storedEnergy != this.tileatomDecomposer.getEnergyStored()){
+					craft.sendProgressBarUpdate(this, 0, this.tileatomDecomposer.getEnergyStored());
 				}
 			}
-			this.storedEnergy = this.tileatomDecomposer.storedEnergy;
+			this.storedEnergy = this.tileatomDecomposer.getEnergyStored();
 		}
 		@Override
 		public boolean canInteractWith(EntityPlayer player) {
@@ -55,7 +55,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 		@SideOnly(Side.CLIENT)
 		public void updateProgressBar(int par1, int par2){
 			if(par1 == 0){
-				this.tileatomDecomposer.storedEnergy = par2;
+				this.tileatomDecomposer.storage.setEnergyStored(par2);
 			}
 		}
 		

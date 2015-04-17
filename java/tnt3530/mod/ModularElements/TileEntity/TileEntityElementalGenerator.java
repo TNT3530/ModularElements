@@ -52,12 +52,12 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 		super();
 		storage = new EnergyStorage(10000, 1024, 1024);
 	}
-	
+
 	public static int getEnergyStored()
 	{
 		return storage.getEnergyStored();
 	}
-	
+
 	private static final int[] slotsTop = new int[] { 0 };
 	private static final int[] slotsBottom = new int[] { 2, 1 };
 	private static final int[] slotsSides = new int[] { 1 };
@@ -132,7 +132,7 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 		{
 			if(this.stacks[0] != null && this.stacks[0].stackSize > 0
 					&& Constants.getItemEnergy(this.stacks[0].getItem()) > 0
-					&& (this.storage.getEnergyStored() + Constants.getItemEnergy(this.stacks[0].getItem()) < 100000))
+					&& (this.storage.getEnergyStored() + Constants.getItemEnergy(this.stacks[0].getItem()) <= 10000))
 			{
 				this.storage.setEnergyStored(this.storage.getEnergyStored() + Constants.getItemEnergy(this.stacks[0].getItem()));
 
@@ -142,7 +142,6 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 					this.stacks[0] = null;
 				}
 			}
-	    	transmitEnergy();
 		}
 		if (flag != this.storage.getEnergyStored() > 0) {
 			flag1 = true;
@@ -151,8 +150,9 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 		if (flag1) {
 			this.markDirty();
 		}
+		transmitEnergy();
 	}
-	
+
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		System.out.println("Reading from NBT");
@@ -215,15 +215,25 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 	public boolean canExtractItem(int par1, ItemStack itemstack, int par3) {
 		return par3 != 0 || par1 != 1 || itemstack.getItem() == Items.bucket;
 	}
-	
+
+	/* IEnergyProvider */
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+
+		return storage.extractEnergy(maxExtract, simulate);
+	}
+
 	/*
 	 * tries to transmit its energy to the adjacent IEnergyHandlers
 	 * sets "couldTransmit" to true if it succeeded, or false if it failed
 	 */
 
-	public void transmitEnergy(){
-		if(storage.getEnergyStored() > 0){
-			for (int i = 0; i < 6; i++){
+	public void transmitEnergy()
+	{
+		if(storage.getEnergyStored() > 0)
+		{
+			for (int i = 0; i < 6; i++)
+			{
 
 				int targetX = xCoord + ForgeDirection.getOrientation(i).offsetX;
 				int targetY = yCoord + ForgeDirection.getOrientation(i).offsetY;
@@ -231,7 +241,8 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 
 				TileEntity tile = worldObj.getTileEntity(targetX, targetY, targetZ);
 
-				if (tile instanceof IEnergyHandler && ((IEnergyHandler) tile).getMaxEnergyStored(ForgeDirection.getOrientation(i).getOpposite()) > ((IEnergyHandler) tile).getEnergyStored(ForgeDirection.getOrientation(i).getOpposite())) {
+				if (tile instanceof IEnergyHandler && ((IEnergyHandler) tile).getMaxEnergyStored(ForgeDirection.getOrientation(i).getOpposite()) > ((IEnergyHandler) tile).getEnergyStored(ForgeDirection.getOrientation(i).getOpposite()))
+				{
 
 					int maxExtract = storage.getMaxExtract();
 					int maxAvailable = storage.extractEnergy(maxExtract, true);
@@ -242,8 +253,7 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 				}
 			}
 		}
-	}
-
-
-
+	}	
 }
+
+

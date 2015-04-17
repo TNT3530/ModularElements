@@ -7,6 +7,10 @@ import java.util.Random;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
 
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
+import cofh.api.energy.TileEnergyHandler;
 import tnt3530.mod.ModularElements.Blocks.BlockAtomCompressor;
 import tnt3530.mod.ModularElements.Common.Constants;
 import tnt3530.mod.ModularElements.Common.ModularElements;
@@ -36,18 +40,30 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityAtomCompressor extends TileEntity implements ISidedInventory {
+public class TileEntityAtomCompressor extends TileEnergyHandler implements ISidedInventory, IEnergyReceiver
+{
 	private static final int[] slotsTop = new int[] { 0 };
 	private static final int[] slotsBottom = new int[] { 2, 1 };
 	private static final int[] slotsSides = new int[] { 1 };
 
 	private ItemStack[] stacks = new ItemStack[3];
 
-	public int storedEnergy = 0;
+	public static EnergyStorage storage;
+	
+	public TileEntityAtomCompressor() {
+		super();
+		storage = new EnergyStorage(1024, 1024, 1024);
+	}
+	
+	public static int getEnergyStored()
+	{
+		return storage.getEnergyStored();
+	}
 
 	private String atomcompressorName;
 	public void atomcompressorName(String string){
@@ -109,27 +125,49 @@ public class TileEntityAtomCompressor extends TileEntity implements ISidedInvent
 	public int getInventoryStackLimit() {
 		return 64;
 	}
+	
+	/* IEnergyReceiver */
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+
+		return storage.receiveEnergy(maxReceive, simulate);
+	}
+	
+	/*
+	 * tries to transmit its energy to the adjacent IEnergyHandlers
+	 * sets "couldTransmit" to true if it succeeded, or false if it failed
+	 */
+
+	public void transmitEnergy(){
+		if(storage.getEnergyStored() < 1024){
+			for (int i = 0; i < 6; i++){
+
+				int targetX = xCoord + ForgeDirection.getOrientation(i).offsetX;
+				int targetY = yCoord + ForgeDirection.getOrientation(i).offsetY;
+				int targetZ = zCoord + ForgeDirection.getOrientation(i).offsetZ;
+
+				TileEntity tile = worldObj.getTileEntity(targetX, targetY, targetZ);
+
+				if (tile instanceof IEnergyHandler && ((IEnergyHandler) tile).getMaxEnergyStored(ForgeDirection.getOrientation(i).getOpposite()) < ((IEnergyHandler) tile).getEnergyStored(ForgeDirection.getOrientation(i).getOpposite())) {
+					int maxExtract = storage.getMaxExtract();
+					int maxAvailable = storage.receiveEnergy(maxExtract, true);
+					int energyTransferred = ((IEnergyHandler) tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), maxAvailable, false);
+					receiveEnergy(ForgeDirection.getOrientation(i), energyTransferred, false);
+					//EChanged = EChanged - maxAvailable;
+					storage.setEnergyStored(storage.getEnergyStored() + maxAvailable);
+				}
+			}
+		}
+	}
+
 
 	public void updateEntity() {
-		boolean flag = this.storedEnergy > 0;
+		boolean flag = this.getEnergyStored() > 0;
 		boolean flag1 = false;
 		if (!this.worldObj.isRemote) 
 		{
-			if(this.stacks[0] != null && this.stacks[0].stackSize > 0
-					&& Constants.getItemEnergy(this.stacks[0].getItem()) > 0
-					&& (this.storedEnergy + Constants.getItemEnergy(this.stacks[0].getItem()) < 1000000000))
-			{
-				storedEnergy = storedEnergy + Constants.getItemEnergy(this.stacks[0].getItem());
-
-				--this.stacks[0].stackSize;
-				if(this.stacks[0].stackSize <= 0)
-				{
-					this.stacks[0] = null;
-				}
-			}
-
 			if(this.stacks[1] != null && this.stacks[1].stackSize > 0
-					&& this.storedEnergy >= 1000)
+					&& this.getEnergyStored() >= 1000)
 			{
 				boolean founditem = false, set = false, foundblock = false, found = false;;
 				int id = -1;
@@ -166,7 +204,7 @@ public class TileEntityAtomCompressor extends TileEntity implements ISidedInvent
 						this.stacks[1] = null;
 					}
 					
-					this.storedEnergy-=1000;
+					this.storage.setEnergyStored(getEnergyStored() - 1000);
 
 					if(this.stacks[2] == null)
 					{
@@ -193,7 +231,7 @@ public class TileEntityAtomCompressor extends TileEntity implements ISidedInvent
 						this.stacks[1] = null;
 					}
 					
-					this.storedEnergy-=5000;
+					this.storage.setEnergyStored(getEnergyStored() - 5000);
 
 					if(this.stacks[2] == null)
 					{
@@ -220,7 +258,7 @@ public class TileEntityAtomCompressor extends TileEntity implements ISidedInvent
 						this.stacks[1] = null;
 					}
 					
-					this.storedEnergy-=500;
+					this.storage.setEnergyStored(getEnergyStored() - 500);
 
 					if(this.stacks[2] == null)
 					{
@@ -240,9 +278,9 @@ public class TileEntityAtomCompressor extends TileEntity implements ISidedInvent
 			}
 
 		}
-		if (flag != this.storedEnergy > 0) {
+		if (flag != this.getEnergyStored() > 0) {
 			flag1 = true;
-			BlockAtomCompressor.updateBlockState(/*this.atomcompressorBurnTime*/ this.storedEnergy > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+			BlockAtomCompressor.updateBlockState(/*this.atomcompressorBurnTime*/ this.getEnergyStored() > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 		}
 		if (flag1) {
 			this.markDirty();
@@ -261,7 +299,7 @@ public class TileEntityAtomCompressor extends TileEntity implements ISidedInvent
 				this.stacks[byte0] = ItemStack.loadItemStackFromNBT(tabCompound1);
 			}
 		}
-		this.storedEnergy = tagCompound.getInteger("compressorStoredEnergy");
+		this.storage.readFromNBT(tagCompound);
 		if (tagCompound.hasKey("CustomName", 8)) {
 			this.atomcompressorName = tagCompound.getString("CustomName");
 		}
@@ -269,7 +307,7 @@ public class TileEntityAtomCompressor extends TileEntity implements ISidedInvent
 	public void writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		System.out.println("Writing to NBT");
-		tagCompound.setInteger("compressorStoredEnergy", this.storedEnergy);
+		this.storage.writeToNBT(tagCompound);
 		NBTTagList tagList = new NBTTagList();
 		for (int i = 0; i < this.stacks.length; ++i) {
 			if (this.stacks[i] != null) {

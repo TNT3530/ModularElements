@@ -7,6 +7,11 @@ import java.util.Random;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
 
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
+import cofh.api.energy.TileEnergyHandler;
 import tnt3530.mod.ModularElements.Blocks.BlockAtomDecomposer;
 import tnt3530.mod.ModularElements.Common.Constants;
 import tnt3530.mod.ModularElements.Common.ModularElements;
@@ -36,18 +41,30 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityAtomDecomposer extends TileEntity implements ISidedInventory {
+public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISidedInventory, IEnergyReceiver
+{
 	private static final int[] slotsTop = new int[] { 0 };
 	private static final int[] slotsBottom = new int[] { 2, 1 };
 	private static final int[] slotsSides = new int[] { 1 };
 
 	private ItemStack[] stacks = new ItemStack[5];
 
-	public int storedEnergy = 0;
+	public static EnergyStorage storage;
+	
+	public TileEntityAtomDecomposer() {
+		super();
+		storage = new EnergyStorage(1024, 1024, 1024);
+	}
+	
+	public static int getEnergyStored()
+	{
+		return storage.getEnergyStored();
+	}
 
 	private String atomdecomposerName;
 	public void atomdecomposerName(String string){
@@ -107,27 +124,14 @@ public class TileEntityAtomDecomposer extends TileEntity implements ISidedInvent
 	}
 	@Override
 	public int getInventoryStackLimit() {
-		return 99999;
+		return 64;
 	}
 
 	public void updateEntity() {
-		boolean flag = this.storedEnergy > 0;
+		boolean flag = getEnergyStored() > 0;
 		boolean flag1 = false;
 		if (!this.worldObj.isRemote) 
 		{
-			if(this.stacks[0] != null && this.stacks[0].stackSize > 0
-					&& Constants.getItemEnergy(this.stacks[0].getItem()) > 0
-					&& (this.storedEnergy + Constants.getItemEnergy(this.stacks[0].getItem()) < 1000000000))
-			{
-				storedEnergy = storedEnergy + Constants.getItemEnergy(this.stacks[0].getItem());
-
-				--this.stacks[0].stackSize;
-				if(this.stacks[0].stackSize <= 0)
-				{
-					this.stacks[0] = null;
-				}
-			}
-
 			if(this.stacks[1] != null && this.stacks[1].stackSize > 0)
 			{
 				this.addDecompose(Items.iron_ingot, 26, 30, 1000);
@@ -136,19 +140,55 @@ public class TileEntityAtomDecomposer extends TileEntity implements ISidedInvent
 				this.addDecompose(Items.diamond, 64 * 9, 64 * 9, 50000);
 			}
 		}
-		if (flag != this.storedEnergy > 0) {
+		if (flag != getEnergyStored() > 0) {
 			flag1 = true;
-			BlockAtomDecomposer.updateBlockState(/*this.atomdecomposerBurnTime*/ this.storedEnergy > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+			BlockAtomDecomposer.updateBlockState(/*this.atomdecomposerBurnTime*/ getEnergyStored() > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 		}
 		if (flag1) {
 			this.markDirty();
 		}
+		this.transmitEnergy();
 	}
+	
+	/* IEnergyReceiver */
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+
+		return storage.receiveEnergy(maxReceive, simulate);
+	}
+	
+	/*
+	 * tries to transmit its energy to the adjacent IEnergyHandlers
+	 * sets "couldTransmit" to true if it succeeded, or false if it failed
+	 */
+
+	public void transmitEnergy(){
+		if(storage.getEnergyStored() < 1024){
+			for (int i = 0; i < 6; i++){
+
+				int targetX = xCoord + ForgeDirection.getOrientation(i).offsetX;
+				int targetY = yCoord + ForgeDirection.getOrientation(i).offsetY;
+				int targetZ = zCoord + ForgeDirection.getOrientation(i).offsetZ;
+
+				TileEntity tile = worldObj.getTileEntity(targetX, targetY, targetZ);
+
+				if (tile instanceof IEnergyHandler && ((IEnergyHandler) tile).getMaxEnergyStored(ForgeDirection.getOrientation(i).getOpposite()) < ((IEnergyHandler) tile).getEnergyStored(ForgeDirection.getOrientation(i).getOpposite())) {
+					int maxExtract = storage.getMaxExtract();
+					int maxAvailable = storage.receiveEnergy(maxExtract, true);
+					int energyTransferred = ((IEnergyHandler) tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), maxAvailable, false);
+					receiveEnergy(ForgeDirection.getOrientation(i), energyTransferred, false);
+					//EChanged = EChanged - maxAvailable;
+					storage.setEnergyStored(storage.getEnergyStored() + maxAvailable);
+				}
+			}
+		}
+	}
+
 
 	private void addDecompose(Item item, int p, int n, int energy)
 	{
 		boolean set = false;
-		if(this.stacks[1] != null && this.stacks[1].getItem() == item  && this.storedEnergy >= energy)
+		if(this.stacks[1] != null && this.stacks[1].getItem() == item  && getEnergyStored() >= energy)
 		{
 			if(this.stacks[2] == null && this.stacks[3] == null && this.stacks[4] == null)
 			{
@@ -157,7 +197,7 @@ public class TileEntityAtomDecomposer extends TileEntity implements ISidedInvent
 				{
 					this.stacks[1] = null;
 				}
-				this.storedEnergy-=energy;
+				this.storage.setEnergyStored(this.getEnergyStored() - energy);
 				this.stacks[2] = new ItemStack(ModularElements.itemProton, p);
 				this.stacks[3] = new ItemStack(ModularElements.itemNeutron, n);
 				this.stacks[4] = new ItemStack(ModularElements.itemElectron, p);
@@ -177,14 +217,14 @@ public class TileEntityAtomDecomposer extends TileEntity implements ISidedInvent
 					{
 						this.stacks[1] = null;
 					}
-					this.storedEnergy-=energy;
+					this.storage.setEnergyStored(this.getEnergyStored() - energy);
 					this.stacks[2].stackSize+=p;
 					this.stacks[3].stackSize+=n;
 					this.stacks[4].stackSize+=p;
 				}
 		}
 	}
-
+	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		System.out.println("Reading from NBT");
@@ -197,15 +237,17 @@ public class TileEntityAtomDecomposer extends TileEntity implements ISidedInvent
 				this.stacks[byte0] = ItemStack.loadItemStackFromNBT(tabCompound1);
 			}
 		}
-		this.storedEnergy = tagCompound.getInteger("decomposerStoredEnergy");
+		storage.readFromNBT(tagCompound);
 		if (tagCompound.hasKey("CustomName", 8)) {
 			this.atomdecomposerName = tagCompound.getString("CustomName");
 		}
 	}
+	
+	@Override
 	public void writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		System.out.println("Writing to NBT");
-		tagCompound.setInteger("decomposerStoredEnergy", this.storedEnergy);
+		storage.writeToNBT(tagCompound);
 		NBTTagList tagList = new NBTTagList();
 		for (int i = 0; i < this.stacks.length; ++i) {
 			if (this.stacks[i] != null) {
