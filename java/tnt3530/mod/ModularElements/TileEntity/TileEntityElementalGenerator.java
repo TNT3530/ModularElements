@@ -230,6 +230,63 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 
 	public void transmitEnergy()
 	{
+		int found;
+		TileEntity foundTile;
+		for(int x = 0; x < 6; x++)
+		{
+			boolean xp, xm, yp, ym, zp, zm;
+			if(x == 0)
+			{
+				TileEntity tile = worldobj.getTileEntity(xCoord + 1, yCoord, zCoord);
+				xp = tile instanceof IEnergyHandler
+				found = x;
+				foundTile = tile;
+			}
+			if(x == 1)
+			{
+				TileEntity tile = worldobj.getTileEntity(xCoord - 1, yCoord, zCoord);
+				xm = tile instanceof IEnergyHandler
+				found = x;
+				foundTile = tile;
+			}
+			if(x == 2)
+			{
+				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord + 1, zCoord);
+				yp = tile instanceof IEnergyHandler
+				found = x;
+				foundTile = tile;
+			}
+			if(x == 3)
+			{
+				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord - 1, zCoord);
+				ym = tile instanceof IEnergyHandler
+				found = x;
+				foundTile = tile;
+			}
+			if(x == 4)
+			{
+				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord, zCoord + 1);
+				zp = tile instanceof IEnergyHandler
+				found = x;
+				foundTile = tile;
+			}
+			if(x == 5)
+			{
+				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord, zCoord - 1);
+				zm = tile instanceof IEnergyHandler
+				found = x;
+				foundTile = tile;
+			}
+		}
+		
+		if(xp || xm || yp || ym || zp || zm)
+		{
+			if(found == 0 && ((IEnergyHandler) foundTile).getMaxEnergyStored() > ((IEnergyHandler) foundTile).getEnergyStored())
+			{
+				((IEnergyHandler) foundTile).receiveEnergy()
+			}
+		}
+		
 		if(storage.getEnergyStored() > 0)
 		{
 			for (int i = 0; i < 6; i++)
