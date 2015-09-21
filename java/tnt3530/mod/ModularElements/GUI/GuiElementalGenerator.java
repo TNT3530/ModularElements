@@ -77,7 +77,7 @@ public class GuiElementalGenerator extends GuiContainer{
 		
 
 		double displayedEnergy = 0;
-		double norm = this.tileFurnace.getEnergyStored();
+		double norm = 0.0;//this.tileFurnace.getEnergyStored();
 		String label = "";
 		if(norm >= 0 && norm < 1000)
 		{

@@ -7,7 +7,7 @@ import java.util.Random;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
 
-import cofh.api.energy.*;
+//import cofh.api.energy.*;
 import tnt3530.mod.ModularElements.Blocks.BlockElementalGenerator;
 import tnt3530.mod.ModularElements.Blocks.BlockElementalGenerator;
 import tnt3530.mod.ModularElements.Common.Constants;
@@ -43,19 +43,15 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityElementalGenerator extends TileEnergyHandler implements ISidedInventory, IEnergyProvider
+//public class TileEntityElementalGenerator extends TileEnergyHandler implements ISidedInventory, IEnergyProvider
+@Deprecated
+public class TileEntityElementalGenerator extends TileEntity implements ISidedInventory
 {
-
-	public static EnergyStorage storage;
+	//public static EnergyStorage storage;
 
 	public TileEntityElementalGenerator() {
 		super();
-		storage = new EnergyStorage(10000, 1024, 1024);
-	}
-
-	public static int getEnergyStored()
-	{
-		return storage.getEnergyStored();
+		//storage = new EnergyStorage(10000, 0, 1000);
 	}
 
 	private static final int[] slotsTop = new int[] { 0 };
@@ -126,13 +122,14 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 	}
 
 	public void updateEntity() {
-		boolean flag = this.storage.getEnergyStored() > 0;
+		/*
+		//boolean flag = this.storage.getEnergyStored() > 0;
 		boolean flag1 = false;
 		if (!this.worldObj.isRemote) 
 		{
 			if(this.stacks[0] != null && this.stacks[0].stackSize > 0
 					&& Constants.getItemEnergy(this.stacks[0].getItem()) > 0
-					&& (this.storage.getEnergyStored() + Constants.getItemEnergy(this.stacks[0].getItem()) <= 10000))
+					&& (this.storage.getEnergyStored() + Constants.getItemEnergy(this.stacks[0].getItem()) <= this.storage.getMaxEnergyStored()))
 			{
 				this.storage.setEnergyStored(this.storage.getEnergyStored() + Constants.getItemEnergy(this.stacks[0].getItem()));
 
@@ -142,15 +139,85 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 					this.stacks[0] = null;
 				}
 			}
-		}
-		if (flag != this.storage.getEnergyStored() > 0) {
-			flag1 = true;
-			BlockElementalGenerator.updateBlockState(/*this.elementalgeneratorBurnTime*/ this.storage.getEnergyStored() > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
-		}
-		if (flag1) {
-			this.markDirty();
-		}
-		transmitEnergy();
+		}*/
+		
+//		if (flag != this.storage.getEnergyStored() > 0) {
+//			flag1 = true;
+//			BlockElementalGenerator.updateBlockState(/*this.elementalgeneratorBurnTime*/ this.storage.getEnergyStored() > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+//		
+//		}
+//		if (flag1) {
+//			this.markDirty();
+//		}
+//		if ((storage.getEnergyStored() > 0)) {
+//			for (int i = 0; i < 6; i++){
+//				TileEntity tile = worldObj.getTileEntity(xCoord + ForgeDirection.getOrientation(i).offsetX, yCoord + ForgeDirection.getOrientation(i).offsetY, zCoord + ForgeDirection.getOrientation(i).offsetZ);
+//				if (tile != null && tile instanceof IEnergyReceiver) {
+//					storage.extractEnergy(((IEnergyReceiver)tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
+//				}
+//			}
+//		}
+	}
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer p_70300_1_) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public void openInventory() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void closeInventory() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public int[] getAccessibleSlotsFromSide(int p_94128_1_) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_, int p_102007_3_) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean canExtractItem(int p_102008_1_, ItemStack p_102008_2_, int p_102008_3_) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	/* IEnergyHandler 
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from) {
+		return true;
+	}
+
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+		return storage.extractEnergy(maxExtract, simulate);
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection from) {
+		return storage.getEnergyStored();
+	}
+	
+	public int getEnergyStored()
+	{
+		return storage.getEnergyStored();
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection from) {
+		return storage.getMaxEnergyStored();
 	}
 
 	public void readFromNBT(NBTTagCompound tagCompound) {
@@ -173,7 +240,7 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 	public void writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		System.out.println("Writing to NBT");
-		tagCompound.setInteger("decomposerStoredEnergy", getEnergyStored());
+		tagCompound.setInteger("decomposerStoredEnergy", this.storage.getEnergyStored());
 		NBTTagList tagList = new NBTTagList();
 		for (int i = 0; i < this.stacks.length; ++i) {
 			if (this.stacks[i] != null) {
@@ -215,102 +282,5 @@ public class TileEntityElementalGenerator extends TileEnergyHandler implements I
 	public boolean canExtractItem(int par1, ItemStack itemstack, int par3) {
 		return par3 != 0 || par1 != 1 || itemstack.getItem() == Items.bucket;
 	}
-
-	/* IEnergyProvider */
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-
-		return storage.extractEnergy(maxExtract, simulate);
-	}
-
-	/*
-	 * tries to transmit its energy to the adjacent IEnergyHandlers
-	 * sets "couldTransmit" to true if it succeeded, or false if it failed
-	 */
-
-	public void transmitEnergy()
-	{
-		int found;
-		TileEntity foundTile;
-		for(int x = 0; x < 6; x++)
-		{
-			boolean xp, xm, yp, ym, zp, zm;
-			if(x == 0)
-			{
-				TileEntity tile = worldobj.getTileEntity(xCoord + 1, yCoord, zCoord);
-				xp = tile instanceof IEnergyHandler
-				found = x;
-				foundTile = tile;
-			}
-			if(x == 1)
-			{
-				TileEntity tile = worldobj.getTileEntity(xCoord - 1, yCoord, zCoord);
-				xm = tile instanceof IEnergyHandler
-				found = x;
-				foundTile = tile;
-			}
-			if(x == 2)
-			{
-				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord + 1, zCoord);
-				yp = tile instanceof IEnergyHandler
-				found = x;
-				foundTile = tile;
-			}
-			if(x == 3)
-			{
-				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord - 1, zCoord);
-				ym = tile instanceof IEnergyHandler
-				found = x;
-				foundTile = tile;
-			}
-			if(x == 4)
-			{
-				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord, zCoord + 1);
-				zp = tile instanceof IEnergyHandler
-				found = x;
-				foundTile = tile;
-			}
-			if(x == 5)
-			{
-				TileEntity tile = worldobj.getTileEntity(xCoord, yCoord, zCoord - 1);
-				zm = tile instanceof IEnergyHandler
-				found = x;
-				foundTile = tile;
-			}
-		}
-		
-		if(xp || xm || yp || ym || zp || zm)
-		{
-			if(found == 0 && ((IEnergyHandler) foundTile).getMaxEnergyStored() > ((IEnergyHandler) foundTile).getEnergyStored())
-			{
-				((IEnergyHandler) foundTile).receiveEnergy()
-			}
-		}
-		
-		if(storage.getEnergyStored() > 0)
-		{
-			for (int i = 0; i < 6; i++)
-			{
-
-				int targetX = xCoord + ForgeDirection.getOrientation(i).offsetX;
-				int targetY = yCoord + ForgeDirection.getOrientation(i).offsetY;
-				int targetZ = zCoord + ForgeDirection.getOrientation(i).offsetZ;
-
-				TileEntity tile = worldObj.getTileEntity(targetX, targetY, targetZ);
-
-				if (tile instanceof IEnergyHandler && ((IEnergyHandler) tile).getMaxEnergyStored(ForgeDirection.getOrientation(i).getOpposite()) > ((IEnergyHandler) tile).getEnergyStored(ForgeDirection.getOrientation(i).getOpposite()))
-				{
-
-					int maxExtract = storage.getMaxExtract();
-					int maxAvailable = storage.extractEnergy(maxExtract, true);
-					int energyTransferred = ((IEnergyHandler) tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), maxAvailable, false);
-					storage.extractEnergy(energyTransferred, false);
-					//EChanged = EChanged - maxAvailable;
-					storage.setEnergyStored(storage.getEnergyStored() - maxAvailable);
-				}
-			}
-		}
-	}	
+	*/
 }
-
-

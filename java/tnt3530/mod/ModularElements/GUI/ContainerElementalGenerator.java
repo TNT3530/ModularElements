@@ -31,17 +31,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 		}
 		public void addCraftingToCrafters(ICrafting craft){
 			super.addCraftingToCrafters(craft);
-			craft.sendProgressBarUpdate(this, 0, (int) this.tileelementalGenerator.getEnergyStored());
+			//craft.sendProgressBarUpdate(this, 0, (int) this.tileelementalGenerator.getEnergyStored());
 		}
 		public void detectAndSendChanges(){
 			super.detectAndSendChanges();
 			for(int i = 0; i < this.crafters.size(); ++i){
-				ICrafting craft = (ICrafting) this.crafters.get(i);
-				if(this.storedEnergy != this.tileelementalGenerator.getEnergyStored()){
-					craft.sendProgressBarUpdate(this, 0, (int) this.tileelementalGenerator.getEnergyStored());
-				}
+				//ICrafting craft = (ICrafting) this.crafters.get(i);
+				//if(this.storedEnergy != this.tileelementalGenerator.getEnergyStored()){
+				//	craft.sendProgressBarUpdate(this, 0, (int) this.tileelementalGenerator.getEnergyStored());
+				//}
 			}
-			this.storedEnergy = this.tileelementalGenerator.getEnergyStored(null);
+			//this.storedEnergy = this.tileelementalGenerator.getEnergyStored(null);
 		}
 		@Override
 		public boolean canInteractWith(EntityPlayer player) {

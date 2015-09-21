@@ -69,11 +69,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 				if(this.storedEnergy != this.tileatomWorkbench.storedEnergy){
 					craft.sendProgressBarUpdate(this, 3, this.tileatomWorkbench.storedEnergy);
 				}
-				for(int i1 = 1; i1 < 13; i1++)
+				for(int i1 = 0; i1 < 12; i1++)
 				{
 					if(this.infoArray[i1] != tileatomWorkbench.elementInformation[i1])
 					{
-						craft.sendProgressBarUpdate(this, 3 + i1, this.tileatomWorkbench.elementInformation[i1]);
+						craft.sendProgressBarUpdate(this, 4 + i1, this.tileatomWorkbench.elementInformation[i1]);
 					}
 				}
 			}

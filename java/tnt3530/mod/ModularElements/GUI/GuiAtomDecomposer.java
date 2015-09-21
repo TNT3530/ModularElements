@@ -81,27 +81,27 @@ public class GuiAtomDecomposer extends GuiContainer{
 		String label = "";
 		if(norm >= 0 && norm < 1000)
 		{
-			label = " RF";
+			label = "J";
 			displayedEnergy = norm;
 		}
 		if(norm >= 1000 && norm < (1000*1000))
 		{
-			label = "k RF";
+			label = "KJ";
 			displayedEnergy = norm/1000;
 		}
 		if(norm >= (1000*1000) && norm < (1000*1000*1000))
 		{
-			label = "m RF";
+			label = "MJ";
 			displayedEnergy = norm/(1000*1000);
 		}
 		if(norm >= (1000*1000*1000) && norm < (1000*1000*1000*1000))
 		{
-			label = "g RF";
+			label = "GJ";
 			displayedEnergy = norm/(1000*1000*1000);
 		}
 		if(norm >= (1000*1000*1000*1000) && norm < (1000*1000*1000*1000*1000))
 		{
-			label = "t RF";
+			label = "TJ";
 			displayedEnergy = norm/(1000*1000*1000*1000);
 		}
 		this.fontRendererObj.drawString("Power- " + displayedEnergy + label, this.xSize / 2 - 43, -9, 4210752);

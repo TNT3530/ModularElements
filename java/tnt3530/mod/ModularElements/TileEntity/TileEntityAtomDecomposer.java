@@ -7,11 +7,11 @@ import java.util.Random;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
-import cofh.api.energy.TileEnergyHandler;
+//import cofh.api.energy.EnergyStorage;
+//import cofh.api.energy.IEnergyHandler;
+//import cofh.api.energy.IEnergyProvider;
+//import cofh.api.energy.IEnergyReceiver;
+//import cofh.api.energy.TileEnergyHandler;
 import tnt3530.mod.ModularElements.Blocks.BlockAtomDecomposer;
 import tnt3530.mod.ModularElements.Common.Constants;
 import tnt3530.mod.ModularElements.Common.ModularElements;
@@ -46,7 +46,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISidedInventory, IEnergyReceiver
+//public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISidedInventory, IEnergyReceiver
+public class TileEntityAtomDecomposer extends TileEntity implements ISidedInventory
 {
 	private static final int[] slotsTop = new int[] { 0 };
 	private static final int[] slotsBottom = new int[] { 2, 1 };
@@ -54,16 +55,17 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 
 	private ItemStack[] stacks = new ItemStack[5];
 
-	public static EnergyStorage storage;
+	//public static EnergyStorage storage;
+	private static int energyStored;
 	
 	public TileEntityAtomDecomposer() {
 		super();
-		storage = new EnergyStorage(1024, 1024, 1024);
+		//storage = new EnergyStorage(1024, 1024, 1024);
 	}
 	
 	public static int getEnergyStored()
 	{
-		return storage.getEnergyStored();
+		return energyStored; //storage.getEnergyStored();
 	}
 
 	private String atomdecomposerName;
@@ -132,6 +134,18 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 		boolean flag1 = false;
 		if (!this.worldObj.isRemote) 
 		{
+			if(this.stacks[0] != null && this.stacks[0].stackSize > 0
+					&& Constants.getItemEnergy(this.stacks[0].getItem()) > 0
+					&& (this.energyStored + Constants.getItemEnergy(this.stacks[0].getItem()) < 1000000000))
+			{
+				energyStored = energyStored + Constants.getItemEnergy(this.stacks[0].getItem());
+
+				--this.stacks[0].stackSize;
+				if(this.stacks[0].stackSize <= 0)
+				{
+					this.stacks[0] = null;
+				}
+			}
 			if(this.stacks[1] != null && this.stacks[1].stackSize > 0)
 			{
 				this.addDecompose(Items.iron_ingot, 26, 30, 1000);
@@ -147,10 +161,10 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 		if (flag1) {
 			this.markDirty();
 		}
-		this.transmitEnergy();
+		//this.transmitEnergy();
 	}
 	
-	/* IEnergyReceiver */
+	/* IEnergyReceiver 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 
@@ -160,7 +174,7 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 	/*
 	 * tries to transmit its energy to the adjacent IEnergyHandlers
 	 * sets "couldTransmit" to true if it succeeded, or false if it failed
-	 */
+	 
 
 	public void transmitEnergy(){
 		if(storage.getEnergyStored() < 1024){
@@ -184,7 +198,7 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 		}
 	}
 
-
+	 */
 	private void addDecompose(Item item, int p, int n, int energy)
 	{
 		boolean set = false;
@@ -197,7 +211,8 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 				{
 					this.stacks[1] = null;
 				}
-				this.storage.setEnergyStored(this.getEnergyStored() - energy);
+				//this.storage.setEnergyStored(this.getEnergyStored() - energy);
+				this.energyStored -= energy;
 				this.stacks[2] = new ItemStack(ModularElements.itemProton, p);
 				this.stacks[3] = new ItemStack(ModularElements.itemNeutron, n);
 				this.stacks[4] = new ItemStack(ModularElements.itemElectron, p);
@@ -217,7 +232,8 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 					{
 						this.stacks[1] = null;
 					}
-					this.storage.setEnergyStored(this.getEnergyStored() - energy);
+					//this.storage.setEnergyStored(this.getEnergyStored() - energy);
+					this.energyStored -= energy;
 					this.stacks[2].stackSize+=p;
 					this.stacks[3].stackSize+=n;
 					this.stacks[4].stackSize+=p;
@@ -237,7 +253,8 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 				this.stacks[byte0] = ItemStack.loadItemStackFromNBT(tabCompound1);
 			}
 		}
-		storage.readFromNBT(tagCompound);
+		//storage.readFromNBT(tagCompound);
+		this.energyStored = tagCompound.getInteger("decomposerStoredEnergy");
 		if (tagCompound.hasKey("CustomName", 8)) {
 			this.atomdecomposerName = tagCompound.getString("CustomName");
 		}
@@ -247,7 +264,8 @@ public class TileEntityAtomDecomposer extends TileEnergyHandler implements ISide
 	public void writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		System.out.println("Writing to NBT");
-		storage.writeToNBT(tagCompound);
+		//storage.writeToNBT(tagCompound);
+		tagCompound.setInteger("decomposerStoredEnergy", this.energyStored);
 		NBTTagList tagList = new NBTTagList();
 		for (int i = 0; i < this.stacks.length; ++i) {
 			if (this.stacks[i] != null) {

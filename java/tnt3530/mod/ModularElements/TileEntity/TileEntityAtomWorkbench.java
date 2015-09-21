@@ -132,10 +132,9 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 		fine = this.elementInformation[1] > 0;
 		if (!this.worldObj.isRemote) 
 		{
-
 			if(this.stacks[0] != null && this.stacks[0].stackSize > 0
 					&& Constants.getItemEnergy(this.stacks[0].getItem()) > 0
-					&& (this.storedEnergy + Constants.getItemEnergy(this.stacks[0].getItem()) < 1000000000))
+					&& (this.storedEnergy + Constants.getItemEnergy(this.stacks[0].getItem()) <= 1000000000))
 			{
 				storedEnergy = storedEnergy + Constants.getItemEnergy(this.stacks[0].getItem());
 
@@ -229,7 +228,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 			{
 				int check;
 				check = ElementStorageManager.getElementGroup(this.elementInformation[1]);
-				this.elementInformation = ElementStorageManager.getElementProperties(check, this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
+				this.elementInformation = ElementStorageManager.calculateAdvProps(check, this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
 			}
 
 			String elementName = ElementStorageManager.getFullName(this.elementInformation[1], this.elementInformation[2]);
@@ -354,7 +353,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 		Item basicPick2 = new itemElementalPickaxe("elementalPick_" + nameSimp, ToolMaterial.EMERALD, dura, 5, speed);
 		Item basicHoe2 = new itemElementalHoe("elementalHoe_" + nameSimp);
 		
-		Item basicIngot = new itemElementalIngot("elementalIngot_element_" + name, elementInformation);
+		Item basicIngot = new itemElementalIngot("elementalIngot_" + name, elementInformation);
 		
 		Block basicBlock = new BlockElementalBlock(elementInformation, nameSimp);
 		

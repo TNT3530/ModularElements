@@ -632,7 +632,7 @@ public class ElementStorageManager
 
 		else return 0;
 	}
-	
+	@Deprecated
 	/**
 	 * @param group
 	 * Group number of the element, retrieved from {@link getElementGroup}
@@ -681,6 +681,94 @@ public class ElementStorageManager
 		int[] g18 = {0, p, n, e, 3, 100, 8, p - e, 0, 0, 0, 1, 1};
 		if(group == 18) return g18;
 		else return null;
+	}
+	
+	/**
+	 * @param group
+	 * Group number of the element, retrieved from {@link getElementGroup}
+	 * @param p
+	 * Protons
+	 * @param n
+	 * Neutrons
+	 * @param e
+	 * Electrons
+	 * @return
+	 * Returns a int array of the ADVANCED/CALCULATED properties. These are more realistic.
+	 */
+	public static int[] calculateAdvProps(int group, double p, double n, double e)
+	{	
+		int[] lazy = getElementProperties(group, (int) p, (int) n, (int) e);
+		
+		//State (Solid[1], Liquid[2], Gas[3])
+		//this.elementInformation[4] = 1;
+		//Stability/Radioactivity (High[1] - Low[100])
+		//this.elementInformation[5] = 80;
+		//Valence E- (1-8)
+		//this.elementInformation[6] = 1;
+		//Charge for Ions
+		//this.elementInformation[7] = 0;
+		//Weight (Light[1] - Heavy[10])
+		//this.elementInformation[8] = 3;
+		//Hardness (Soft[1] - Hard[10]
+		//this.elementInformation[9] = 1;
+		//Brittleness (Mallable[1] - Shatter[10]
+		//this.elementInformation[10] = 1;
+		//Conductivity (Not[0] - Very[10])
+		//this.elementInformation[11] = 1;
+		//Flamibility (Water[0] - Explosive[100])
+		//this.elementInformation[12] = 65;
+		double state, stability, valance, charge, weight, 
+			hardness, brittleness, conductivity, flamibility;
+		
+		//State - Is always defined as solid for now
+		state = 1;
+		
+		//Stability - Takes into account P/N ratio and total size
+		if(p < 20)
+		{
+			stability = (((n/p)*100) / (p/n)) / 1;
+		}
+		if(p > 20)
+		{
+			stability = (((n/p)*100) / (p/n)) / 1.87;
+		}
+		else stability = 0;
+		
+		if(stability > 100)
+		{
+			stability -= 2*(stability - 100);
+		}
+		if(stability <= 0)
+		{
+			stability = 0;
+		}
+		
+		//Valence - All defined, ez mode engaged.
+		valance = lazy[6];
+		
+		//Charge - Also ez, p-e
+		charge = p - e;
+		
+		//Weight - IRL this is based on stuff, so Ill make it up
+		weight = (p + n)*(p / (n + 1));
+		if(weight > 100)
+		{
+			weight = 100;
+		}
+		//Hardness - IRL this is based on structure, so Ill make it up again :D
+		hardness = (stability + 1) * (1 / (3 * state)) / 10;
+		
+		//Brittleness - Spawned from hardness and stability because I feel like it
+		brittleness = hardness / (stability + 1);
+		
+		//Conductivity - Currently useless so Ill predefine it
+		conductivity = lazy[11];
+		
+		//Flamibility - Also useless for now, predefined
+		flamibility = lazy[12];
+		
+		int[] returned = {0, (int) p, (int) n, (int) e, (int) state, (int) stability, (int) valance, (int) charge, (int) weight, (int) hardness, (int) brittleness, (int) conductivity, (int) flamibility};
+		return returned;
 	}
 }
 
