@@ -18,7 +18,7 @@ public class itemsMain extends Item
     public itemsMain(String name)
     {
         super();
-        setUnlocalizedName(Constants.MODID + "_" + name);
+        this.setUnlocalizedName(Constants.MODID + "_" + name);
         this.setTextureName(Constants.MODID + ":" + name);
         this.setCreativeTab(ModularElements.tabElementalMaterials);
     	GameRegistry.registerItem(this, name);

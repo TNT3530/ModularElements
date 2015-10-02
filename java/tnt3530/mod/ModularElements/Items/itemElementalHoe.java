@@ -24,16 +24,23 @@ import net.minecraftforge.event.entity.player.UseHoeEvent;
 public class itemElementalHoe extends Item
 {	
     int level = 0, speed = 0;
+    private int[] props;
     
-    public itemElementalHoe(String name)
+    public itemElementalHoe(String name, int[] props)
     {
     	super();
         setUnlocalizedName(Constants.MODID + "_" + name);
         this.setTextureName(Constants.MODID + ":basicHoe");
         this.setCreativeTab(ModularElements.tabElementalTools);
     	GameRegistry.registerItem(this, name);
+    	this.props = props;
     }
-
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int parColorType)
+    {
+    	int color = (props[1]*2+40 & 255) << 16 | (props[2]*2+40 & 255) << 8 | props[3]*2+40 & 255;
+        return (parColorType == 0) ? color : 0;
+    }
     /**
      * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
      * True if something happen and false if it don't. This is for ITEMS, not BLOCKS

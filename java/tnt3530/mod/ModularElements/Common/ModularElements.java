@@ -84,11 +84,12 @@ public class ModularElements
 		//coreModularElement = new CoreElement(0, 0, 0, null, "coreElement");
 		basicElement = new itemsMain("basicElement");
 		
-		basicSword = new itemElementalSword("basicSword", ToolMaterial.EMERALD, 1024, 7.0F);
-		basicPick = new itemElementalPickaxe("basicPick", ToolMaterial.EMERALD, 1024, 4, 14);
-		basicAxe = new itemElementalAxe("basicAxe", ToolMaterial.EMERALD, 1024, 14);
-		basicHoe = new itemElementalHoe("basicHoe");
-		basicShovel = new itemElementalSpade("basicShovel", ToolMaterial.EMERALD, 1024, 14);
+		int[] basicProps = {215,215,215,215};
+		basicSword = new itemElementalSword("basicSword", ToolMaterial.EMERALD, 1024, 7.0F, basicProps);
+		basicPick = new itemElementalPickaxe("basicPick", ToolMaterial.EMERALD, 1024, 4, 14, basicProps);
+		basicAxe = new itemElementalAxe("basicAxe", ToolMaterial.EMERALD, 1024, 14, basicProps);
+		basicHoe = new itemElementalHoe("basicHoe", basicProps);
+		basicShovel = new itemElementalSpade("basicShovel", ToolMaterial.EMERALD, 1024, 14, basicProps);
 		
 		itemProton = new itemsMain("itemProton");
 		itemElectron = new itemsMain("itemElectron");
@@ -116,7 +117,7 @@ public class ModularElements
 				int ele = Integer.parseInt(data[3]);
 				
 				int group = ElementStorageManager.getElementGroup(Integer.parseInt(data[1]));
-				int[] props = ElementStorageManager.getElementProperties(group,pro, neu, ele);
+				int[] props = ElementStorageManager.calculateAdvProps(group,pro, neu, ele);
 				
 				int hard = props[9];
 				int brit = props[10];
@@ -124,15 +125,15 @@ public class ModularElements
 				int dura = (hard * 1024) - (brit * 256);
 				int speed = (hard + 14) - (brit);
 				
-				String name = ElementStorageManager.getFullName(pro, neu);
-				
+				//String name = ElementStorageManager.getFullName(pro, neu);
+				String name = ElementStorageManager.getDisplayName(pro, neu);
 				//Adding Tools
-				String nameSimp = ElementStorageManager.getElementName(pro) + "ium (" + (neu + pro) + ")";
-				basicSword2 = new itemElementalSword("elementalSword_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
-				basicAxe2 = new itemElementalAxe("elementalAxe_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
-				basicShovel2 = new itemElementalSpade("elementalShovel_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
-				basicPick2 = new itemElementalPickaxe("elementalPick_" + nameSimp, ToolMaterial.EMERALD, dura, 4, speed);
-				basicHoe2 = new itemElementalHoe("elementalHoe_" + nameSimp);
+				String nameSimp = ElementStorageManager.getElementName(pro) + "ium(" + (neu + pro) + ")";
+				basicSword2 = new itemElementalSword("elementalSword_" + nameSimp, ToolMaterial.EMERALD, dura, speed, props);
+				basicAxe2 = new itemElementalAxe("elementalAxe_" + nameSimp, ToolMaterial.EMERALD, dura, speed, props);
+				basicShovel2 = new itemElementalSpade("elementalShovel_" + nameSimp, ToolMaterial.EMERALD, dura, speed, props);
+				basicPick2 = new itemElementalPickaxe("elementalPick_" + nameSimp, ToolMaterial.EMERALD, dura, 4, speed, props);
+				basicHoe2 = new itemElementalHoe("elementalHoe_" + nameSimp, props);
 				ElementStorageManager.swords[x] = basicSword2;
 				ElementStorageManager.hoes[x] = basicHoe2;
 				ElementStorageManager.axes[x] = basicAxe2;

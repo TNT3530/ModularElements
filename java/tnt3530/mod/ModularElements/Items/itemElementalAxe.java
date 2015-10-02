@@ -24,10 +24,10 @@ import net.minecraftforge.event.entity.player.UseHoeEvent;
 public class itemElementalAxe extends ItemTool
 {	
 	private static final Set axeGood = Sets.newHashSet(new Block[] {Blocks.planks, Blocks.bookshelf, Blocks.log, Blocks.log2, Blocks.chest, Blocks.pumpkin, Blocks.lit_pumpkin});
-
+	private int[] props;
 	int speed = 0;
-
-	public itemElementalAxe(String name, ToolMaterial material, int maxdamage, int speed)
+	
+	public itemElementalAxe(String name, ToolMaterial material, int maxdamage, int speed, int[] props)
 	{
 		super(2.0F, material, axeGood);
 		setUnlocalizedName(Constants.MODID + "_" + name);
@@ -36,10 +36,18 @@ public class itemElementalAxe extends ItemTool
 		GameRegistry.registerItem(this, name);
 		this.efficiencyOnProperMaterial = speed;
 		this.setMaxDamage(maxdamage);
+		this.props = props;
 	}
 
 	public float func_150893_a(ItemStack p_150893_1_, Block p_150893_2_)
 	{
 		return p_150893_2_.getMaterial() != Material.wood && p_150893_2_.getMaterial() != Material.plants && p_150893_2_.getMaterial() != Material.vine ? super.func_150893_a(p_150893_1_, p_150893_2_) : this.efficiencyOnProperMaterial;
 	}  
+	
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int parColorType)
+    {
+    	int color = (props[1]*2+40 & 255) << 16 | (props[2]*2+40 & 255) << 8 | props[3]*2+40 & 255;
+        return (parColorType == 0) ? color : 0;
+    }
 }

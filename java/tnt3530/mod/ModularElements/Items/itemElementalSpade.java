@@ -24,10 +24,10 @@ import net.minecraftforge.event.entity.player.UseHoeEvent;
 public class itemElementalSpade extends ItemTool
 {	
 	private static final Set spadeGood = Sets.newHashSet(new Block[] {Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow_layer, Blocks.snow, Blocks.clay, Blocks.farmland, Blocks.soul_sand, Blocks.mycelium});
-
 	int speed = 0;
-
-	public itemElementalSpade(String name, ToolMaterial material, int maxdamage, int speed)
+	private int[] props;
+	
+	public itemElementalSpade(String name, ToolMaterial material, int maxdamage, int speed, int[] props)
 	{
 		super(2.0F, material, spadeGood);
 		setUnlocalizedName(Constants.MODID + "_" + name);
@@ -36,8 +36,14 @@ public class itemElementalSpade extends ItemTool
 		GameRegistry.registerItem(this, name);
 		this.efficiencyOnProperMaterial = speed;
 		this.setMaxDamage(maxdamage);
+		this.props = props;
 	}
-
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int parColorType)
+    {
+    	int color = (props[1]*2+40 & 255) << 16 | (props[2]*2+40 & 255) << 8 | props[3]*2+40 & 255;
+        return (parColorType == 0) ? color : 0;
+    }
 	public boolean func_150897_b(Block p_150897_1_)
 	{
 		return p_150897_1_ == Blocks.snow_layer ? true : p_150897_1_ == Blocks.snow;

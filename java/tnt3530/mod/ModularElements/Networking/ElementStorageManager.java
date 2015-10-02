@@ -314,10 +314,12 @@ public class ElementStorageManager
 		for(int x = 0; x < ElementStorageManager.loadedElementsAndInfo.length; x++)
 		{
 			String[] data = ElementStorageManager.getElementAndInfo(x);
-			
-			int pro = Integer.parseInt(data[1]);
-			int mass1 = Integer.parseInt(data[1]) + Integer.parseInt(data[2]);
-			if(pro == ton && mass1 == mass) ret = Integer.parseInt(data[0]);
+			if(data.length > 3)
+			{
+				int pro = Integer.parseInt(data[1]);
+				int mass1 = Integer.parseInt(data[1]) + Integer.parseInt(data[2]);
+				if(pro == ton && mass1 == mass) ret = Integer.parseInt(data[0]);
+			}
 		}	
 		return ret;
 	}

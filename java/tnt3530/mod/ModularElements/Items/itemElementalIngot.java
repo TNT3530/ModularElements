@@ -27,4 +27,11 @@ public class itemElementalIngot extends Item
     	GameRegistry.registerItem(this, name);
     	this.props = props;
     }
+    
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int parColorType)
+    {
+    	int color = (props[1]*2+40 & 255) << 16 | (props[2]*2+40 & 255) << 8 | props[3]*2+40 & 255;
+        return (parColorType == 0) ? color : 0;
+    }
 }

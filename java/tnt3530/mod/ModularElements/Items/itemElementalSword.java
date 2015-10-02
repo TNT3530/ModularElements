@@ -24,8 +24,9 @@ public class itemElementalSword extends Item
 {	
     private float sworddamage;
     private final Item.ToolMaterial field_150933_b;
+    private int[] props;
     
-    public itemElementalSword(String name, ToolMaterial material, int maxdamage, float damage)
+    public itemElementalSword(String name, ToolMaterial material, int maxdamage, float damage, int[] props)
     {
         this.setUnlocalizedName(Constants.MODID + "_" + name);
         this.setTextureName(Constants.MODID + ":basicSword");
@@ -35,8 +36,14 @@ public class itemElementalSword extends Item
         this.maxStackSize = 1;
         this.setMaxDamage(maxdamage);
         this.sworddamage = damage;
+        this.props = props;
     }
-
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int parColorType)
+    {
+    	int color = (props[1]*2+40 & 255) << 16 | (props[2]*2+40 & 255) << 8 | props[3]*2+40 & 255;
+        return (parColorType == 0) ? color : 0;
+    }
     public float func_150931_i()
     {
         return this.sworddamage;

@@ -231,8 +231,9 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 				this.elementInformation = ElementStorageManager.calculateAdvProps(check, this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
 			}
 
-			String elementName = ElementStorageManager.getFullName(this.elementInformation[1], this.elementInformation[2]);
-
+			//String elementName = ElementStorageManager.getFullName(this.elementInformation[1], this.elementInformation[2]);
+			String elementName = ElementStorageManager.getDisplayName(this.elementInformation[1], this.elementInformation[2]);
+			
 			if (this.stacks[2] != null && this.stacks[2].stackSize > 0 && 
 					this.stacks[2].getItem() == ModularElements.basicElement
 					&& this.elementInformation[1] > 0 && this.stacks[3] == null
@@ -347,11 +348,11 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 		
 		//Adding Tools
 		String nameSimp = ElementStorageManager.getElementName(elementInformation[1]) + "ium(" + (elementInformation[1] + elementInformation[2]) + ")";
-		Item basicSword2 = new itemElementalSword("elementalSword_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
-		Item basicAxe2 = new itemElementalAxe("elementalAxe_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
-		Item basicShovel2 = new itemElementalSpade("elementalShovel_" + nameSimp, ToolMaterial.EMERALD, dura, speed);
-		Item basicPick2 = new itemElementalPickaxe("elementalPick_" + nameSimp, ToolMaterial.EMERALD, dura, 5, speed);
-		Item basicHoe2 = new itemElementalHoe("elementalHoe_" + nameSimp);
+		Item basicSword2 = new itemElementalSword("elementalSword_" + nameSimp, ToolMaterial.EMERALD, dura, speed, elementInformation);
+		Item basicAxe2 = new itemElementalAxe("elementalAxe_" + nameSimp, ToolMaterial.EMERALD, dura, speed, elementInformation);
+		Item basicShovel2 = new itemElementalSpade("elementalShovel_" + nameSimp, ToolMaterial.EMERALD, dura, speed, elementInformation);
+		Item basicPick2 = new itemElementalPickaxe("elementalPick_" + nameSimp, ToolMaterial.EMERALD, dura, 5, speed, elementInformation);
+		Item basicHoe2 = new itemElementalHoe("elementalHoe_" + nameSimp, elementInformation);
 		
 		Item basicIngot = new itemElementalIngot("elementalIngot_" + name, elementInformation);
 		

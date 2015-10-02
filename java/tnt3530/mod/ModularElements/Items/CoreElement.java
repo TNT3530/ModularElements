@@ -14,6 +14,7 @@ public class CoreElement extends Item
 {
 	private String formulaDisplayed;
 	private int protonAmount, neutronAmount, electronAmount;
+	public int color;
 
     public CoreElement(int protonAmount, 
     		int neutronAmount, int electronAmount, String formula, String name)
@@ -36,6 +37,13 @@ public class CoreElement extends Item
         par3List.add(this.formulaDisplayed);
         par3List.add("Atomic Number: " + this.protonAmount);
         par3List.add("Atomic Mass: " + mass);
+    }
+    
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int parColorType)
+    {
+    	int color = (this.protonAmount*2+40 & 255) << 16 | (this.neutronAmount*2+40 & 255) << 8 | this.electronAmount*2+40 & 255;
+        return (parColorType == 0) ? color : 0;
     }
 }
 
