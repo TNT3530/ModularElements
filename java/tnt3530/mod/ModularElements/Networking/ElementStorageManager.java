@@ -726,19 +726,11 @@ public class ElementStorageManager
 		state = 1;
 		
 		//Stability - Takes into account P/N ratio and total size
-		if(p < 20)
-		{
-			stability = (((n/p)*100) / (p/n)) / 1;
-		}
-		if(p > 20)
-		{
-			stability = (((n/p)*100) / (p/n)) / 1.87;
-		}
-		else stability = 0;
-		
+		double eq = .005*Math.pow(p, 2) + (2.136 * p) - 1.475;
+		stability = eq/n*100;
 		if(stability > 100)
 		{
-			stability -= 2*(stability - 100);
+			stability -= (stability - 100);
 		}
 		if(stability <= 0)
 		{
