@@ -21,15 +21,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiAtomWorkbench extends GuiContainer{
-	private static final ResourceLocation furnaceGuiTextures = new ResourceLocation(Constants.MODID + ":" + "textures/client/gui/guiatomworkbench.png");
-	private TileEntityAtomWorkbench tileFurnace;
+public class GuiCompWorkbench extends GuiContainer{
+	private static final ResourceLocation furnaceGuiTextures = new ResourceLocation(Constants.MODID + ":" + "textures/client/gui/guicompworkbench.png");
+	private TileEntityCompWorkbench tileFurnace;
 	
 	//private GuiTextField text;
 	//private boolean set = false;
 	
-	public GuiAtomWorkbench(InventoryPlayer invPlayer, TileEntityAtomWorkbench tile) {
-		super(new ContainerAtomWorkbench(invPlayer, tile));
+	public GuiCompWorkbench(InventoryPlayer invPlayer, TileEntityCompWorkbench tile) {
+		super(new ContainerCompWorkbench(invPlayer, tile));
 		this.tileFurnace = tile;
 	}
 	/*
@@ -53,32 +53,36 @@ public class GuiAtomWorkbench extends GuiContainer{
 		int basic = -1;
 		int change = 10;
 		
-		String string = this.tileFurnace.hasCustomInventoryName() ? this.tileFurnace.getInventoryName() : I18n.format(Constants.MODID + "_" + "blockAtomWorkbenchGuiName", new Object[0]);
+		String string = this.tileFurnace.hasCustomInventoryName() ? this.tileFurnace.getInventoryName() : I18n.format(Constants.MODID + "_" + "blockCompWorkbenchGuiName", new Object[0]);
 		
 		this.fontRendererObj.drawString(string, this.xSize / 2 - this.fontRendererObj.getStringWidth(string) + 40, -20, 4210752);
 		this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 35, this.ySize - 64, 4210752);
 		
-		this.fontRendererObj.drawString("Element Creation", this.xSize / 2 - 80, 35, 4210752);
-		this.fontRendererObj.drawString(this.tileFurnace.elementInformation[1] + " Protons", this.xSize / 2 - 55, 51, 4210752);
-		this.fontRendererObj.drawString(this.tileFurnace.elementInformation[2] + " Neutrons", this.xSize / 2 - 55, 69, 4210752);
-		this.fontRendererObj.drawString(this.tileFurnace.elementInformation[3] + " Electrons", this.xSize / 2 - 55, 87, 4210752);
+		this.fontRendererObj.drawString("Compound Fusion", this.xSize / 2 - 54, 2, 4210752);
 		
 		String state = "";
-		if(this.tileFurnace.elementInformation[4] == 1) state = "Solid";
-		if(this.tileFurnace.elementInformation[4] == 2) state = "Liquid";
-		if(this.tileFurnace.elementInformation[4] == 3) state = "Gas";
-		int mass = this.tileFurnace.elementInformation[1] + this.tileFurnace.elementInformation[2];
-		this.fontRendererObj.drawString(ElementStorageManager.getDisplayName(this.tileFurnace.elementInformation[1], this.tileFurnace.elementInformation[2]), this.xSize / 2 + 39, basic - change -1, 4210752);
+		if(this.tileFurnace.compoundInformation[4] == 1) state = "Solid";
+		if(this.tileFurnace.compoundInformation[4] == 2) state = "Liquid";
+		if(this.tileFurnace.compoundInformation[4] == 3) state = "Gas";
+		int mass = this.tileFurnace.compoundInformation[1] + this.tileFurnace.compoundInformation[2];
+		this.fontRendererObj.drawString(ElementStorageManager.getDisplayName(this.tileFurnace.compoundInformation[1], this.tileFurnace.compoundInformation[2]), this.xSize / 2 + 39, basic - change -1, 4210752);
 		this.fontRendererObj.drawString("State: " + state, this.xSize / 2 + 39, basic, 4210752);
-		this.fontRendererObj.drawString("Stability: " + this.tileFurnace.elementInformation[5], this.xSize / 2 + 39, basic + 10, 4210752);
-		this.fontRendererObj.drawString("Valence : " + this.tileFurnace.elementInformation[6], this.xSize / 2 + 39, basic + 20, 4210752);
-		this.fontRendererObj.drawString("Charge: " + this.tileFurnace.elementInformation[7], this.xSize / 2 + 39, basic + (3 * change), 4210752);
-		this.fontRendererObj.drawString("Weight: " + this.tileFurnace.elementInformation[8], this.xSize / 2 + 39, basic + (4 * change), 4210752);
-		this.fontRendererObj.drawString("Hardness: " + this.tileFurnace.elementInformation[9], this.xSize / 2 + 39, basic + (5 * change), 4210752);
-		this.fontRendererObj.drawString("Brittleness: " + this.tileFurnace.elementInformation[10], this.xSize / 2 + 39, basic + (6 * change), 4210752);
-		this.fontRendererObj.drawString("Conductivity: " + this.tileFurnace.elementInformation[11], this.xSize / 2 + 39, basic + (7 * change), 4210752);
-		this.fontRendererObj.drawString("Flamibility: " + this.tileFurnace.elementInformation[12], this.xSize / 2 + 39, basic + (8 * change), 4210752);
-		this.fontRendererObj.drawString("Atomic Mass: " + mass, this.xSize / 2 + 39, basic + (10 * change), 4210752);
+		this.fontRendererObj.drawString("Stability: " + this.tileFurnace.compoundInformation[5], this.xSize / 2 + 39, basic + 10, 4210752);
+		this.fontRendererObj.drawString("Valence : " + this.tileFurnace.compoundInformation[6], this.xSize / 2 + 39, basic + 20, 4210752);
+		this.fontRendererObj.drawString("Charge: " + this.tileFurnace.compoundInformation[7], this.xSize / 2 + 39, basic + (3 * change), 4210752);
+		this.fontRendererObj.drawString("Weight: " + this.tileFurnace.compoundInformation[8], this.xSize / 2 + 39, basic + (4 * change), 4210752);
+		this.fontRendererObj.drawString("Hardness: " + this.tileFurnace.compoundInformation[9], this.xSize / 2 + 39, basic + (5 * change), 4210752);
+		this.fontRendererObj.drawString("Brittleness: " + this.tileFurnace.compoundInformation[10], this.xSize / 2 + 39, basic + (6 * change), 4210752);
+		this.fontRendererObj.drawString("Conductivity: " + this.tileFurnace.compoundInformation[11], this.xSize / 2 + 39, basic + (7 * change), 4210752);
+		this.fontRendererObj.drawString("Flamibility: " + this.tileFurnace.compoundInformation[12], this.xSize / 2 + 39, basic + (8 * change), 4210752);
+		this.fontRendererObj.drawString("Compic Mass: " + mass, this.xSize / 2 + 39, basic + (10 * change), 4210752);
+		
+		this.fontRendererObj.drawString("" + this.tileFurnace.inputElementsForCompounding[0] + "," + this.tileFurnace.inputElementsForCompounding[1], this.xSize / 2 + 39, basic + 20, 4210752);
+		this.fontRendererObj.drawString("" + this.tileFurnace.inputElementsForCompounding[2] + "," + this.tileFurnace.inputElementsForCompounding[3], this.xSize / 2 + 39, basic + 20, 4210752);
+		this.fontRendererObj.drawString("" + this.tileFurnace.inputElementsForCompounding[4] + "," + this.tileFurnace.inputElementsForCompounding[5], this.xSize / 2 + 39, basic + 20, 4210752);
+		this.fontRendererObj.drawString("" + this.tileFurnace.inputElementsForCompounding[6] + "," + this.tileFurnace.inputElementsForCompounding[7], this.xSize / 2 + 39, basic + 20, 4210752);
+		this.fontRendererObj.drawString("" + this.tileFurnace.inputElementsForCompounding[8] + "," + this.tileFurnace.inputElementsForCompounding[9], this.xSize / 2 + 39, basic + 20, 4210752);
+		
 		double displayedEnergy = 0;
 		String label = "";
 		int j = 1;

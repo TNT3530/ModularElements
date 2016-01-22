@@ -3,11 +3,13 @@ tile.modularelements_blockAtomWorkbench.name=Elemental Workbench
 tile.modularelements_blockToolInfuser.name=Elemental Tool Infuser
 tile.modularelements_blockAtomCompressor.name=Elemental Manipulator
 tile.modularelements_blockAtomDecomposer.name=Elemental Decomposer
+tile.modularelements_blockCompWorkbench.name=Compound Workbench
 #Blocks
 modularelements_blockAtomWorkbenchGuiName=Elemental Workbench
 modularelements_blockToolInfuserGuiName=Elemental Tool Infuser
 modularelements_blockAtomCompressorGuiName=Elemental Manipulator
 modularelements_blockAtomDecomposerGuiName=Elemental Decomposer
+modularelements_blockCompWorkbenchGuiName=Compound Workbench
 #Items
 item.modularelements_coreElement.name=THIS ELEMENT IS KILL! PLZ REPORT
 item.modularelements_basicElement.name=Basic Element

@@ -8,6 +8,7 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
 
 import tnt3530.mod.ModularElements.Blocks.BlockAtomWorkbench;
+import tnt3530.mod.ModularElements.Blocks.BlockCompWorkbench;
 import tnt3530.mod.ModularElements.Blocks.BlockElementalBlock;
 import tnt3530.mod.ModularElements.Common.Constants;
 import tnt3530.mod.ModularElements.Common.ModularElements;
@@ -18,6 +19,7 @@ import tnt3530.mod.ModularElements.Items.itemElementalIngot;
 import tnt3530.mod.ModularElements.Items.itemElementalPickaxe;
 import tnt3530.mod.ModularElements.Items.itemElementalSpade;
 import tnt3530.mod.ModularElements.Items.itemElementalSword;
+import tnt3530.mod.ModularElements.Networking.CompoundStorageManager;
 import tnt3530.mod.ModularElements.Networking.ConfigurationHandler;
 import tnt3530.mod.ModularElements.Networking.ElementStorageManager;
 import net.minecraft.block.Block;
@@ -41,23 +43,22 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityAtomWorkbench extends TileEntity implements ISidedInventory {
-	public int[] elementInformation = new int[13]; //int[X] sets max data
+public class TileEntityCompWorkbench extends TileEntity implements ISidedInventory {
+	public int[] compoundInformation = new int[49]; //int[X] sets max data
 	//0, p, n, e, state, stab, val, char, weig, hard, brit, cond, flame
-
 	private static final int[] slotsTop = new int[] { 0 };
 	private static final int[] slotsBottom = new int[] { 2, 1 };
 	private static final int[] slotsSides = new int[] { 1 };
-
+	private boolean fine = false;
 	private String ones, tens, hunds, thous, sOnes, sHunds, sTens, sThous;
 	private int one, ten, hund, thou;
-	private boolean fine = false;
+	public int[] inputElementsForCompounding = new int[] {0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
 
-	private ItemStack[] stacks = new ItemStack[7];
+	private ItemStack[] stacks = new ItemStack[8];
 
-	public int atomworkbenchBurnTime;
+	public int compworkbenchBurnTime;
 	public int currentBurnTime;
-	public int atomworkbenchCookTime;
+	public int compworkbenchCookTime;
 
 	//property stuffs
 	private double hardness = 0, brittleness = 0, conductivity = 0, stability = 0, flamability = 0,
@@ -65,9 +66,9 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 
 	public int storedEnergy = 0;
 
-	private String atomworkbenchName;
-	public void atomworkbenchName(String string){
-		this.atomworkbenchName = string;
+	private String compworkbenchName;
+	public void compworkbenchName(String string){
+		this.compworkbenchName = string;
 	}
 	@Override
 	public int getSizeInventory() {
@@ -106,12 +107,6 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 			return null;
 		}
 	}
-	
-	public String elementDisplayNameforGUI(int pro, int neu)
-	{
-		return ElementStorageManager.getDisplayName(pro, neu);
-	}
-	
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack itemstack) {
 		this.stacks[slot] = itemstack;
@@ -121,21 +116,21 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 	}
 	@Override
 	public String getInventoryName() {
-		return this.hasCustomInventoryName() ? this.atomworkbenchName : "Atomic Workbench";
+		return this.hasCustomInventoryName() ? this.compworkbenchName : "Compound Workbench";
 	}
 	@Override
 	public boolean hasCustomInventoryName() {
-		return this.atomworkbenchName != null && this.atomworkbenchName.length() > 0;
+		return this.compworkbenchName != null && this.compworkbenchName.length() > 0;
 	}
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	public void updateEntity() {
+public void updateEntity() {
 		boolean flag = this.storedEnergy > 0;
 		boolean flag1 = false;
-		fine = this.elementInformation[1] > 0;
+		fine = this.compoundInformation[1] > 0;
 		if (!this.worldObj.isRemote) 
 		{
 			if(this.stacks[0] != null && this.stacks[0].stackSize > 0
@@ -154,7 +149,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 			if(this.stacks[4] != null && this.stacks[4].stackSize > 0
 					&& this.stacks[4].getItem() == ModularElements.itemProton)
 			{
-				this.elementInformation[1]++;
+				this.compoundInformation[1]++;
 				this.stacks[4].stackSize--;
 
 				if(this.stacks[4].stackSize <= 0)
@@ -166,7 +161,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 			if(this.stacks[5] != null && this.stacks[5].stackSize > 0
 					&& this.stacks[5].getItem() == ModularElements.itemNeutron)
 			{
-				this.elementInformation[2]++;
+				this.compoundInformation[2]++;
 
 				this.stacks[5].stackSize--;
 				if(this.stacks[5].stackSize <= 0)
@@ -177,7 +172,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 			if(this.stacks[6] != null && this.stacks[6].stackSize > 0
 					&& this.stacks[6].getItem() == ModularElements.itemElectron)
 			{
-				this.elementInformation[3]++;
+				this.compoundInformation[3]++;
 				this.stacks[6].stackSize--;
 
 				if(this.stacks[6].stackSize <= 0)
@@ -186,15 +181,15 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 				}
 			}
 
-			if(this.stacks[2] != null && this.stacks[2].getItem().getUnlocalizedName().contains("element") && this.storedEnergy > 250 &&
+			if(this.stacks[2] != null && this.stacks[2].getItem().getUnlocalizedName().contains("compound") && this.storedEnergy > 250 &&
 					this.stacks[2].getItem() != ModularElements.basicElement)
 			{		
-				int[] protons = ElementStorageManager.getProtonsFromName((this.stacks[2].getItem().getUnlocalizedName()));
-				int id = ElementStorageManager.getIdFromProtonsAndMass(protons[0], protons[1]);
+				int[] protons = CompoundStorageManager.getProtonsFromName((this.stacks[2].getItem().getUnlocalizedName()));
+				int id = CompoundStorageManager.getIdFromProtonsAndMass(protons[0], protons[1]);
 
 				//System.out.println("Protons- " + protons[0] + " Mass- " + protons[1] + " ID- " + id);
 
-				String[] data = ElementStorageManager.getElementAndInfo(id);
+				String[] data = CompoundStorageManager.getCompoundAndInfo(id);
 				int[] data1 = new int[data.length];
 				boolean broke = true;
 
@@ -203,29 +198,29 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 					for(int x = 1; x < 4; x++)
 					{
 						data1[x] = Integer.parseInt(data[x]);
-						System.out.println("X= " + x + " Data1- " + data1[x] + " Info- " + elementInformation[x]);
+						System.out.println("X= " + x + " Data1- " + data1[x] + " Info- " + compoundInformation[x]);
 					}
 					boolean t1 = false;
 					boolean t2 = false;
 					boolean t3 = false;
 					
-					if(data1[1] <= this.elementInformation[1]) t1 = true;
-					if(data1[2] <= this.elementInformation[2]) t2 = true;
-					if(data1[3] <= this.elementInformation[3]) t3 = true;
+					if(data1[1] <= this.compoundInformation[1]) t1 = true;
+					if(data1[2] <= this.compoundInformation[2]) t2 = true;
+					if(data1[3] <= this.compoundInformation[3]) t3 = true;
 					
 					if(t1 && t2 && t3) broke = false;
 				}
 
 				if(!broke)
 				{
-					System.out.println("Elements Matched!");
+					System.out.println("Compounds Matched!");
 					this.storedEnergy -= 250;
 
 					this.stacks[2].stackSize++;
 
-					this.elementInformation[1] -= data1[1];
-					this.elementInformation[2] -= data1[2];
-					this.elementInformation[3] -= data1[3];
+					this.compoundInformation[1] -= data1[1];
+					this.compoundInformation[2] -= data1[2];
+					this.compoundInformation[3] -= data1[3];
 				}
 
 			}
@@ -233,51 +228,51 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 			if(fine)
 			{
 				int check;
-				check = ElementStorageManager.getElementGroup(this.elementInformation[1]);
-				this.elementInformation = ElementStorageManager.calculateAdvProps(check, this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
+				check = CompoundStorageManager.getCompoundGroup(this.compoundInformation[1]);
+				this.compoundInformation = CompoundStorageManager.calculateAdvProps(check, this.compoundInformation[1], this.compoundInformation[2], this.compoundInformation[3]);
 			}
 
-			//String elementName = ElementStorageManager.getFullName(this.elementInformation[1], this.elementInformation[2]);
-			String elementName = ElementStorageManager.getDisplayName(this.elementInformation[1], this.elementInformation[2]);
+			//String compoundName = CompoundStorageManager.getFullName(this.compoundInformation[1], this.compoundInformation[2]);
+			String compoundName = CompoundStorageManager.getDisplayName(this.compoundInformation[1], this.compoundInformation[2]);
 			
 			if (this.stacks[2] != null && this.stacks[2].stackSize > 0 && 
 					this.stacks[2].getItem() == ModularElements.basicElement
-					&& this.elementInformation[1] > 0 && this.stacks[3] == null
-					&& ElementStorageManager.canCreateElement(elementName) 
+					&& this.compoundInformation[1] > 0 && this.stacks[3] == null
+					&& CompoundStorageManager.canCreateCompound(compoundName) 
 					&& this.storedEnergy >= 5000) 
 			{		
 				boolean pro = true;
 				boolean neu = true;
 				boolean darn = false;
 
-				for(int i = 1; i < (ElementStorageManager.loadedElementsAndInfo.length); i++)
+				for(int i = 1; i < (CompoundStorageManager.loadedCompoundsAndInfo.length); i++)
 				{
-					String[] data = ElementStorageManager.getElementAndInfo(i);
+					String[] data = CompoundStorageManager.getCompoundAndInfo(i);
 
-					if(this.elementInformation[1] == Integer.parseInt(data[1])) 
+					if(this.compoundInformation[1] == Integer.parseInt(data[1])) 
 					{
 						pro = false;
 					}
 					
-					if(this.elementInformation[2] == Integer.parseInt(data[2]))
+					if(this.compoundInformation[2] == Integer.parseInt(data[2]))
 					{
 						neu = false;
 					}
 					
-					if(this.elementInformation[1] != Integer.parseInt(data[1])) 
+					if(this.compoundInformation[1] != Integer.parseInt(data[1])) 
 					{
 						pro = true;
 					}
 					
-					if(this.elementInformation[2] != Integer.parseInt(data[2]))
+					if(this.compoundInformation[2] != Integer.parseInt(data[2]))
 					{
 						neu = true;
 					}
 					
 					System.out.println("ID- " + i);
-					System.out.println(this.elementInformation[1] + " vs " + data[1]);
+					System.out.println(this.compoundInformation[1] + " vs " + data[1]);
 					System.out.println("Pass- " + pro);
-					System.out.println(this.elementInformation[2] + " vs " + data[2]);
+					System.out.println(this.compoundInformation[2] + " vs " + data[2]);
 					System.out.println("Pass- " + neu);
 					System.out.println("");
 					
@@ -296,12 +291,12 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 					{
 						this.stacks[2] = null;
 					}
-					this.createElement(elementName);
+					this.createCompound(compoundName);
 				}
 				
 				if(darn)
 				{
-					int id = ElementStorageManager.getIdFromProtonsAndMass(this.elementInformation[1], (this.elementInformation[1] + this.elementInformation[2]));
+					int id = CompoundStorageManager.getIdFromProtonsAndMass(this.compoundInformation[1], (this.compoundInformation[1] + this.compoundInformation[2]));
 					--this.stacks[2].stackSize;
 					this.storedEnergy -=5000;
 					
@@ -310,15 +305,15 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 						this.stacks[2] = null;
 					}
 					
-					this.stacks[3] = new ItemStack(ElementStorageManager.elements[id]);
-					this.stacks[3].setStackDisplayName(ElementStorageManager.getElementName(this.elementInformation[1]) + "ium " + "(" + (this.elementInformation[1] + this.elementInformation[2]) + ")");
+					this.stacks[3] = new ItemStack(CompoundStorageManager.compounds[id]);
+					this.stacks[3].setStackDisplayName(CompoundStorageManager.getCompoundName(this.compoundInformation[1]) + "ium " + "(" + (this.compoundInformation[1] + this.compoundInformation[2]) + ")");
 					
 					for(int i = 1; i < 13; i++)
 					{
-						this.elementInformation[i] = 0;
+						this.compoundInformation[i] = 0;
 					}
 
-					ElementStorageManager.readElements();
+					CompoundStorageManager.readCompounds();
 				}
 			}
 		}
@@ -331,56 +326,56 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 		}
 	}
 
-	private void createElement(String ele)
+	private void createCompound(String ele)
 	{
-		Item element = new CoreElement(this.elementInformation[1], 
-				this.elementInformation[2], this.elementInformation[3], ElementStorageManager.getElementSymbol(this.elementInformation[1]), ele);
+		Item compound = new CoreElement(this.compoundInformation[1], 
+				this.compoundInformation[2], this.compoundInformation[3], CompoundStorageManager.getCompoundSymbol(this.compoundInformation[1]), ele);
 		
-		//ElementStorageManager.getElementProperties(ElementStorageManager.getElementGroup(this.elementInformation[1]), this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
-		String name = ElementStorageManager.getDisplayName(this.elementInformation[1], this.elementInformation[2]);
+		//CompoundStorageManager.getCompoundProperties(CompoundStorageManager.getCompoundGroup(this.compoundInformation[1]), this.compoundInformation[1], this.compoundInformation[2], this.compoundInformation[3]);
+		String name = CompoundStorageManager.getDisplayName(this.compoundInformation[1], this.compoundInformation[2]);
 		
-		this.stacks[3] = new ItemStack(element, 1);
+		this.stacks[3] = new ItemStack(compound, 1);
 		this.stacks[3].setStackDisplayName(name);
 		
-		ElementStorageManager.storeElement(ele, this.elementInformation[1], this.elementInformation[2], this.elementInformation[3]);
+		CompoundStorageManager.storeCompound(ele, this.compoundInformation[1], this.compoundInformation[2], this.compoundInformation[3]);
 
-		int hard = elementInformation[9];
-		int brit = elementInformation[10];
+		int hard = compoundInformation[9];
+		int brit = compoundInformation[10];
 		
 		int dura = (hard * 1024) - (brit * 256);
 		int speed = (hard + 8) - (brit);
 		
-		int x = ElementStorageManager.nextStore;
+		int x = CompoundStorageManager.nextStore;
 		
 		//Adding Tools
-		String nameSimp = ElementStorageManager.getElementName(elementInformation[1]) + "ium(" + (elementInformation[1] + elementInformation[2]) + ")";
-		Item basicSword2 = new itemElementalSword("elementalSword_" + nameSimp, ToolMaterial.EMERALD, dura, speed, elementInformation);
-		Item basicAxe2 = new itemElementalAxe("elementalAxe_" + nameSimp, ToolMaterial.EMERALD, dura, speed, elementInformation);
-		Item basicShovel2 = new itemElementalSpade("elementalShovel_" + nameSimp, ToolMaterial.EMERALD, dura, speed, elementInformation);
-		Item basicPick2 = new itemElementalPickaxe("elementalPick_" + nameSimp, ToolMaterial.EMERALD, dura, 5, speed, elementInformation);
-		Item basicHoe2 = new itemElementalHoe("elementalHoe_" + nameSimp, elementInformation);
+		String nameSimp = CompoundStorageManager.getCompoundName(compoundInformation[1]) + "ium(" + (compoundInformation[1] + compoundInformation[2]) + ")";
+		Item basicSword2 = new itemElementalSword("compoundalSword_" + nameSimp, ToolMaterial.EMERALD, dura, speed, compoundInformation);
+		Item basicAxe2 = new itemElementalAxe("compoundalAxe_" + nameSimp, ToolMaterial.EMERALD, dura, speed, compoundInformation);
+		Item basicShovel2 = new itemElementalSpade("compoundalShovel_" + nameSimp, ToolMaterial.EMERALD, dura, speed, compoundInformation);
+		Item basicPick2 = new itemElementalPickaxe("compoundalPick_" + nameSimp, ToolMaterial.EMERALD, dura, 5, speed, compoundInformation);
+		Item basicHoe2 = new itemElementalHoe("compoundalHoe_" + nameSimp, compoundInformation);
 		
-		Item basicIngot = new itemElementalIngot("elementalIngot_" + name, elementInformation);
+		Item basicIngot = new itemElementalIngot("compoundalIngot_" + name, compoundInformation);
 		
-		Block basicBlock = new BlockElementalBlock(elementInformation, nameSimp);
+		Block basicBlock = new BlockElementalBlock(compoundInformation, nameSimp);
 		
-		ElementStorageManager.blocks[x] = basicBlock;
-		ElementStorageManager.ingots[x] = basicIngot;	
-		ElementStorageManager.swords[x] = basicSword2;
-		ElementStorageManager.hoes[x] = basicHoe2;
-		ElementStorageManager.axes[x] = basicAxe2;
-		ElementStorageManager.spades[x] = basicShovel2;
-		ElementStorageManager.picks[x] = basicPick2;
-		ElementStorageManager.elements[x] = element;
+		CompoundStorageManager.blocks[x] = basicBlock;
+		CompoundStorageManager.ingots[x] = basicIngot;	
+		CompoundStorageManager.swords[x] = basicSword2;
+		CompoundStorageManager.hoes[x] = basicHoe2;
+		CompoundStorageManager.axes[x] = basicAxe2;
+		CompoundStorageManager.spades[x] = basicShovel2;
+		CompoundStorageManager.picks[x] = basicPick2;
+		CompoundStorageManager.compounds[x] = compound;
 		
 		for(int i = 1; i < 13; i++)
 		{
-			this.elementInformation[i] = 0;
+			this.compoundInformation[i] = 0;
 		}
 
-		ElementStorageManager.readElements();
-		ElementStorageManager.nextStore++;
-		System.out.println("Sucessfully added element and family.");
+		CompoundStorageManager.readCompounds();
+		CompoundStorageManager.nextStore++;
+		System.out.println("Sucessfully added compound and family.");
 	}
 
 	public void readFromNBT(NBTTagCompound tagCompound) {
@@ -395,22 +390,22 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 				this.stacks[byte0] = ItemStack.loadItemStackFromNBT(tabCompound1);
 			}
 		}
-		this.atomworkbenchBurnTime = tagCompound.getShort("BurnTime");
-		this.atomworkbenchCookTime = tagCompound.getShort("CookTime");
-		this.elementInformation = tagCompound.getIntArray("atomicStoredElementInfo");
-		this.storedEnergy = tagCompound.getInteger("atomicStoredEnergy");
+		this.compworkbenchBurnTime = tagCompound.getShort("BurnTime");
+		this.compworkbenchCookTime = tagCompound.getShort("CookTime");
+		this.compoundInformation = tagCompound.getIntArray("compicStoredCompoundInfo");
+		this.storedEnergy = tagCompound.getInteger("compicStoredEnergy");
 
 		if (tagCompound.hasKey("CustomName", 8)) {
-			this.atomworkbenchName = tagCompound.getString("CustomName");
+			this.compworkbenchName = tagCompound.getString("CustomName");
 		}
 	}
 	public void writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		System.out.println("Writing to NBT");
-		tagCompound.setInteger("atomicStoredEnergy", this.storedEnergy);
-		tagCompound.setIntArray("atomicStoredElementInfo", this.elementInformation);
-		tagCompound.setShort("BurnTime", (short) this.atomworkbenchBurnTime);
-		tagCompound.setShort("CookTime", (short) this.atomworkbenchBurnTime);	
+		tagCompound.setInteger("compicStoredEnergy", this.storedEnergy);
+		tagCompound.setIntArray("compicStoredCompoundInfo", this.compoundInformation);
+		tagCompound.setShort("BurnTime", (short) this.compworkbenchBurnTime);
+		tagCompound.setShort("CookTime", (short) this.compworkbenchBurnTime);	
 
 		NBTTagList tagList = new NBTTagList();
 		for (int i = 0; i < this.stacks.length; ++i) {
@@ -423,7 +418,7 @@ public class TileEntityAtomWorkbench extends TileEntity implements ISidedInvento
 		}
 		tagCompound.setTag("Items", tagList);
 		if (this.hasCustomInventoryName()) {
-			tagCompound.setString("CustomName", this.atomworkbenchName);
+			tagCompound.setString("CustomName", this.compworkbenchName);
 		}
 	}
 

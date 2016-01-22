@@ -16,72 +16,72 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import tnt3530.mod.ModularElements.Common.Constants;
 import tnt3530.mod.ModularElements.Items.CoreElement;
-import tnt3530.mod.ModularElements.TileEntity.TileEntityAtomWorkbench;
+import tnt3530.mod.ModularElements.TileEntity.TileEntityCompWorkbench;
 
-public class ElementStorageManager
+public class CompoundStorageManager
 {
-	public static final int maxStoredElements = ConfigurationHandler.maxElements;
-	public static String[] loadedElementsAndInfo = null;
-	public static int elementId = -1;
+	public static final int maxStoredCompounds = ConfigurationHandler.maxElements;
+	public static String[] loadedCompoundsAndInfo = null;
+	public static int compoundId = -1;
 	private static boolean reasons = false;
 	public static int nextStore = 0;
-	public static Item[] elements = new Item[maxStoredElements];
-	public static Item[] swords = new Item[maxStoredElements];
-	public static Item[] picks = new Item[maxStoredElements];
-	public static Item[] spades = new Item[maxStoredElements];
-	public static Item[] hoes = new Item[maxStoredElements];
-	public static Item[] axes = new Item[maxStoredElements];
-	public static Item[] ingots = new Item[maxStoredElements];
-	public static Block[] blocks = new Block[maxStoredElements];
+	public static Item[] compounds = new Item[maxStoredCompounds];
+	public static Item[] swords = new Item[maxStoredCompounds];
+	public static Item[] picks = new Item[maxStoredCompounds];
+	public static Item[] spades = new Item[maxStoredCompounds];
+	public static Item[] hoes = new Item[maxStoredCompounds];
+	public static Item[] axes = new Item[maxStoredCompounds];
+	public static Item[] ingots = new Item[maxStoredCompounds];
+	public static Block[] blocks = new Block[maxStoredCompounds];
 	
 	/**
 	 * 	@param pro
-	 *  Amount of protons in the element being named
+	 *  Amount of protons in the compound being named
 	 *  
 	 *  @param neu
-	 *  Amount of neutrons in the element being named
+	 *  Amount of neutrons in the compound being named
 	 *  
 	 *  @return
-	 *  Returns the full name of the element, including the element_ part
+	 *  Returns the full name of the compound, including the compound_ part
 	 */
 	public static String getFullName(int pro, int neu)
 	{
-		return "element_" + getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
+		return "compound_" + getCompoundName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
 	}
 	
 	/**
 	 * 	@param pro
-	 *  Amount of protons in the element being named
+	 *  Amount of protons in the compound being named
 	 *  
 	 *  @param neu
-	 *  Amount of neutrons in the element being named
+	 *  Amount of neutrons in the compound being named
 	 *  
 	 *  @return
-	 *  Returns the displayable name, the one without the element_ part
+	 *  Returns the displayable name, the one without the compound_ part
 	 */
 	public static String getDisplayName(int pro, int neu)
 	{
-		return getElementName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
+		return getCompoundName(pro) + "ium " + "§§(§§" + (pro + neu) + "§§)";
 	}
 	
 	/**
 	 * 	@param name
-	 *  Amount of protons in the element being named
+	 *  Amount of protons in the compound being named
 	 *  
 	 *  @return
-	 *  True if the element wont exceed the max amount of elements and the id is free
+	 *  True if the compound wont exceed the max amount of compounds and the id is free
 	 */
-	public static boolean canCreateElement(String name)
+	public static boolean canCreateCompound(String name)
 	{
-		if(loadedElementsAndInfo.length > 0 && !reasons)
+		if(loadedCompoundsAndInfo.length > 0 && !reasons)
 		{
-			elementId = elementId + loadedElementsAndInfo.length;
+			compoundId = compoundId + loadedCompoundsAndInfo.length;
 			reasons = true;
 		}
 		//System.out.println(name);
-		//System.out.println(elementId);
-		//System.out.println(ConfigurationHandler.maxElements);
-		if(elementId < ConfigurationHandler.maxElements)
+		//System.out.println(compoundId);
+		//System.out.println(ConfigurationHandler.maxCompounds);
+		if(compoundId < ConfigurationHandler.maxElements)
 		{
 			return true;
 		}
@@ -90,55 +90,55 @@ public class ElementStorageManager
 
 	/**
 	 * 	@param name
-	 *  Name of the element (This is just for debug purposes)
+	 *  Name of the compound (This is just for debug purposes)
 	 *  
 	 *  @param var1
-	 *  Amount of protons in the element being stored
+	 *  Amount of protons in the compound being stored
 	 *  
 	 *  @param var2
-	 *  Amount of neutrons in the element being stored
+	 *  Amount of neutrons in the compound being stored
 	 *  
 	 *  @param var3
-	 *  Amount of electrons in the element being stored
+	 *  Amount of electrons in the compound being stored
 	 */
-	public static void storeElement(String name, int var1, int var2, int var3)
+	public static void storeCompound(String name, int var1, int var2, int var3)
 	{
-		elementId++;
-		System.out.println("Element " + name + " has been saved. (We Hope)");
-		System.out.println("Element " + name + " has been registered as element #" + elementId);
-		System.out.println(ConfigurationHandler.maxElements - elementId + " compound/element(s) left to create.");
+		compoundId++;
+		System.out.println("Compound " + name + " has been saved. (We Hope)");
+		System.out.println("Compound " + name + " has been registered as compound #" + compoundId);
+		System.out.println(ConfigurationHandler.maxElements - compoundId + " compound/element(s) left to create.");
 		try {
 
-			File file = new File("CreatedElements.txt");
+			File file = new File("CreatedCompounds.txt");
 
 			if (!file.exists()) {
 				file.createNewFile();
-				System.out.println("Oh dear, it appears you killed Modular Elements. That wasn't very nice.");
-				System.out.println("Next time, don't delete CreatedElements.txt please, for your own safety. <3");
+				System.out.println("Oh dear, it appears you killed Modular Compounds. That wasn't very nice.");
+				System.out.println("Next time, don't delete CreatedCompounds.txt please, for your own safety. <3");
 			}
 			
 			//State (Solid[1], Liquid[2], Gas[3])
-			//this.elementInformation[4] = 1;
+			//this.compoundInformation[4] = 1;
 			//Stability/Radioactivity (High[1] - Low[100])
-			//this.elementInformation[5] = 80;
+			//this.compoundInformation[5] = 80;
 			//Valence E- (1-8)
-			//this.elementInformation[6] = 1;
+			//this.compoundInformation[6] = 1;
 			//Charge for Ions
-			//this.elementInformation[7] = 0;
+			//this.compoundInformation[7] = 0;
 			//Weight (Light[1] - Heavy[10])
-			//this.elementInformation[8] = 3;
+			//this.compoundInformation[8] = 3;
 			//Hardness (Soft[1] - Hard[10]
-			//this.elementInformation[9] = 1;
+			//this.compoundInformation[9] = 1;
 			//Brittleness (Mallable[1] - Shatter[10]
-			//this.elementInformation[10] = 1;
+			//this.compoundInformation[10] = 1;
 			//Conductivity (Not[0] - Very[10])
-			//this.elementInformation[11] = 1;
+			//this.compoundInformation[11] = 1;
 			//Flamibility (Water[0] - Explosive[100])
-			//this.elementInformation[12] = 65;
+			//this.compoundInformation[12] = 65;
 			
 			FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("/" + elementId + ":" + var1 + ":" + var2 + ":" + var3);		
+			bw.write("/" + compoundId + ":" + var1 + ":" + var2 + ":" + var3);		
 			bw.close();
 
 			System.out.println("Done");
@@ -151,10 +151,10 @@ public class ElementStorageManager
 	
 	/**
 	 * @param name
-	 * The name of the element
+	 * The name of the compound
 	 * 
 	 * @return
-	 * Returns an Int array of the amount of protons for the element and the mass
+	 * Returns an Int array of the amount of protons for the compound and the mass
 	 */
 	public static int[] getProtonsFromName(String name)
 	{
@@ -303,17 +303,17 @@ public class ElementStorageManager
 	 * Amount of protons
 	 * 
 	 * @param mass
-	 * Mass of the element
+	 * Mass of the compound
 	 * 
 	 * @return
-	 * Returns the element ID
+	 * Returns the compound ID
 	 */
 	public static int getIdFromProtonsAndMass(int ton, int mass)
 	{
 		int ret = 0;
-		for(int x = 0; x < ElementStorageManager.loadedElementsAndInfo.length; x++)
+		for(int x = 0; x < CompoundStorageManager.loadedCompoundsAndInfo.length; x++)
 		{
-			String[] data = ElementStorageManager.getElementAndInfo(x);
+			String[] data = CompoundStorageManager.getCompoundAndInfo(x);
 			if(data.length > 3)
 			{
 				int pro = Integer.parseInt(data[1]);
@@ -324,12 +324,12 @@ public class ElementStorageManager
 		return ret;
 	}
 	
-	public static void readElements()
+	public static void readCompounds()
 	{
 		String[] ret = null;
 		try{
 			// Open file to read from, named SavedObj.sav.
-			FileInputStream saveFile = new FileInputStream("CreatedElements.txt");
+			FileInputStream saveFile = new FileInputStream("CreatedCompounds.txt");
 
 			// Create an ObjectInputStream to get objects from save file.
 			//ObjectInputStream save = new ObjectInputStream(saveFile);
@@ -347,34 +347,34 @@ public class ElementStorageManager
 		}
 		catch(Exception exc){
 			exc.printStackTrace(); // If there was an error, print the info.
-			System.out.println("No CreatedElements.txt found!");
+			System.out.println("No CreatedCompounds.txt found!");
 			
 			try
 			{
-				PrintWriter writer = new PrintWriter("CreatedElements.txt");
+				PrintWriter writer = new PrintWriter("CreatedCompounds.txt");
 				writer.println("0:0:0:0");
 				writer.close();
-				System.out.println("Created a new CreatedElements.txt for you. You're welcome.");
+				System.out.println("Created a new CreatedCompounds.txt for you. You're welcome.");
 			}
 			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Elements read from file");
-		loadedElementsAndInfo = ret;
+		System.out.println("Compounds read from file");
+		loadedCompoundsAndInfo = ret;
 	}
 	
 	/**
 	 * @param id
-	 * ID of the element to get information about
+	 * ID of the compound to get information about
 	 * 
 	 * @return
-	 * Returns a STRING array of the Protons, Neutrons and Electrons retrieved from CreatedElements.txt
+	 * Returns a STRING array of the Protons, Neutrons and Electrons retrieved from CreatedCompounds.txt
 	 */
-	public static String[] getElementAndInfo(int id)
+	public static String[] getCompoundAndInfo(int id)
 	{
-		String ret = loadedElementsAndInfo[id];
+		String ret = loadedCompoundsAndInfo[id];
 		String[] data = ret.split(":");
 		return data;
 	}
@@ -460,12 +460,12 @@ public class ElementStorageManager
 
 	/**
 	 * @param x
-	 * Amount of protons of the element to name
+	 * Amount of protons of the compound to name
 	 * 
 	 * @return
-	 * Returns name of the element _-_-_ium
+	 * Returns name of the compound _-_-_ium
 	 */
-	public static String getElementName(int x)
+	public static String getCompoundName(int x)
 	{		
 		int trimThou = (x / 1000) * 1000;
 		int trimHund = ((x - trimThou) / 100) * 100;
@@ -486,12 +486,12 @@ public class ElementStorageManager
 
 	/**
 	 * @param x
-	 * Amount of protons of the element to get the symbol of
+	 * Amount of protons of the compound to get the symbol of
 	 * 
 	 * @return
-	 * Returns 1-3 Letter symbol of the element
+	 * Returns 1-3 Letter symbol of the compound
 	 */
-	public static String getElementSymbol(int x)
+	public static String getCompoundSymbol(int x)
 	{		
 		int trimThou = (x / 1000) * 1000;
 		int trimHund = ((x - trimThou) / 100) * 100;
@@ -509,7 +509,7 @@ public class ElementStorageManager
 		else return "";
 	}
 	
-	public static int getElementGroup(int x)
+	public static int getCompoundGroup(int x)
 	{
 		int tempProtonAmount = 0;
 
@@ -637,7 +637,7 @@ public class ElementStorageManager
 	@Deprecated
 	/**
 	 * @param group
-	 * Group number of the element, retrieved from {@link getElementGroup}
+	 * Group number of the compound, retrieved from {@link getCompoundGroup}
 	 * @param p
 	 * Protons
 	 * @param n
@@ -647,7 +647,7 @@ public class ElementStorageManager
 	 * @return
 	 * Returns a int array of the properties
 	 */
-	public static int[] getElementProperties(int group, int p, int n, int e)
+	public static int[] getCompoundProperties(int group, int p, int n, int e)
 	{
 		////////////0, 1, 2, 3, 4, 5, 6,    7,   8, 9, 10, 11, 12
 		int[] g1 = {0, p, n, e, 1, 80, 1, p - e, 3, 1, 1, 1, 65};
@@ -687,7 +687,7 @@ public class ElementStorageManager
 	
 	/**
 	 * @param group
-	 * Group number of the element, retrieved from {@link getElementGroup}
+	 * Group number of the compound, retrieved from {@link getCompoundGroup}
 	 * @param p
 	 * Protons
 	 * @param n
@@ -699,26 +699,26 @@ public class ElementStorageManager
 	 */
 	public static int[] calculateAdvProps(int group, double p, double n, double e)
 	{	
-		int[] lazy = getElementProperties(group, (int) p, (int) n, (int) e);
+		int[] lazy = getCompoundProperties(group, (int) p, (int) n, (int) e);
 		
 		//State (Solid[1], Liquid[2], Gas[3])
-		//this.elementInformation[4] = 1;
+		//this.compoundInformation[4] = 1;
 		//Stability/Radioactivity (High[1] - Low[100])
-		//this.elementInformation[5] = 80;
+		//this.compoundInformation[5] = 80;
 		//Valence E- (1-8)
-		//this.elementInformation[6] = 1;
+		//this.compoundInformation[6] = 1;
 		//Charge for Ions
-		//this.elementInformation[7] = 0;
+		//this.compoundInformation[7] = 0;
 		//Weight (Light[1] - Heavy[10])
-		//this.elementInformation[8] = 3;
+		//this.compoundInformation[8] = 3;
 		//Hardness (Soft[1] - Hard[10]
-		//this.elementInformation[9] = 1;
+		//this.compoundInformation[9] = 1;
 		//Brittleness (Mallable[1] - Shatter[10]
-		//this.elementInformation[10] = 1;
+		//this.compoundInformation[10] = 1;
 		//Conductivity (Not[0] - Very[10])
-		//this.elementInformation[11] = 1;
+		//this.compoundInformation[11] = 1;
 		//Flamibility (Water[0] - Explosive[100])
-		//this.elementInformation[12] = 65;
+		//this.compoundInformation[12] = 65;
 		double state, stability, valance, charge, weight, 
 			hardness, brittleness, conductivity, flamibility;
 		

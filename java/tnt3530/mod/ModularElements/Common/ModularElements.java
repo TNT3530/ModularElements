@@ -40,6 +40,7 @@ public class ModularElements
 	public static Item basicSword2, basicPick2, basicAxe2, basicShovel2, basicHoe2;
 	public static Item basicIngot;
 	public static Block atomWorkbench, toolInfuser, atomCompressor, atomDecomposer;
+	public static Block compWorkbench;
 	public static Block basicBlock;
 	public static Block basicGenerator;
 	//public static Item basicHelmet, basicChest, basicLegs, basicFeet;
@@ -76,7 +77,7 @@ public class ModularElements
 
 		if(ConfigurationHandler.maxElements > 0)
 		{
-			System.out.println("YEA IT READS");
+			//System.out.println("YEA IT READS");
 			System.out.println(ConfigurationHandler.maxElements);
 		}
 
@@ -99,6 +100,7 @@ public class ModularElements
 		toolInfuser = new BlockToolInfuser();
 		atomCompressor = new BlockAtomCompressor();
 		atomDecomposer = new BlockAtomDecomposer();
+		compWorkbench = new BlockCompWorkbench();
 		
 		basicGenerator = new BlockElementalGenerator();
 		
@@ -123,7 +125,7 @@ public class ModularElements
 				int brit = props[10];
 				
 				int dura = (hard * 1024) - (brit * 256);
-				int speed = (hard + 14) - (brit);
+				int speed = (hard + 8) - (brit);
 				
 				//String name = ElementStorageManager.getFullName(pro, neu);
 				String name = ElementStorageManager.getDisplayName(pro, neu);

@@ -36,6 +36,11 @@ public class GuiHandler implements IGuiHandler {
 			TileEntityElementalGenerator tileentity1 = (TileEntityElementalGenerator) world.getTileEntity(x, y, z);
 			return new ContainerElementalGenerator(player.inventory, tileentity1);
 		}
+		if(ID == 5)
+		{
+			TileEntityCompWorkbench te = (TileEntityCompWorkbench) world.getTileEntity(x, y, z);
+			return new ContainerCompWorkbench(player.inventory, te);
+		}
 		return null;
 	}
 
@@ -66,6 +71,11 @@ public class GuiHandler implements IGuiHandler {
 		{
 			TileEntityElementalGenerator tileentity1 = (TileEntityElementalGenerator) world.getTileEntity(x, y, z);
 			return new GuiElementalGenerator(player.inventory, tileentity1);
+		}
+		if(ID == 5)
+		{
+			TileEntityCompWorkbench tileentity1 = (TileEntityCompWorkbench) world.getTileEntity(x, y, z);
+			return new GuiCompWorkbench(player.inventory, tileentity1);
 		}
 		else return null;
 	}
